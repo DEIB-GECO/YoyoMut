@@ -2,7 +2,7 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-from recognition_algorithm.utils.yo_yo_check import classify_mutation
+from utils.yo_yo_check import classify_mutation
 import streamlit as st
 from scipy.stats import linregress
 

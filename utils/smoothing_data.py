@@ -1,5 +1,5 @@
 import csv
-from data_collection.preparation.confidence_interval import confidence_interval
+from utils.confidence_interval import confidence_interval
 import numpy as np
 
 

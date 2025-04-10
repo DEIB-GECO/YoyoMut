@@ -3,7 +3,7 @@ import sys
 
 sys.path.append("../")
 
-from recognition_algorithm.utils.web_data_prep import data_preparation
+from utils.web_data_prep import data_preparation
 
 st.set_page_config(page_title="Home page", layout="wide")
 

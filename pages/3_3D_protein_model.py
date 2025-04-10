@@ -3,12 +3,12 @@ import time
 import pandas as pd
 import streamlit as st
 
-from recognition_algorithm.protein_visualization.protein_3d_model import show_3d_protein
-from recognition_algorithm.utils.hill_count import classify_mutations_threshold
-from recognition_algorithm.utils.name_conversion import get_residues
-from recognition_algorithm.utils.visualization import show_mutation_data
-from recognition_algorithm.utils.web_data_prep import data_preparation
-from recognition_algorithm.utils.yo_yo_check import filter_mutations
+from protein_visualization.protein_3d_model import show_3d_protein
+from utils.hill_count import classify_mutations_threshold
+from utils.name_conversion import get_residues
+from utils.visualization import show_mutation_data
+from utils.web_data_prep import data_preparation
+from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="3D protein model", layout="wide")
 st.sidebar.header("3D protein model")

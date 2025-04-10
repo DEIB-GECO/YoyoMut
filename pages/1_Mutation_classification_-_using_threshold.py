@@ -2,10 +2,10 @@ import time
 
 import streamlit as st
 
-from recognition_algorithm.utils.hill_count import classify_mutations_threshold
-from recognition_algorithm.utils.visualization import show_mutation_data
-from recognition_algorithm.utils.web_data_prep import data_preparation
-from recognition_algorithm.utils.yo_yo_check import filter_mutations
+from utils.hill_count import classify_mutations_threshold
+from utils.visualization import show_mutation_data
+from utils.web_data_prep import data_preparation
+from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
 
