@@ -2,9 +2,9 @@ import os
 import streamlit as st
 import pandas as pd
 
-from recognition_algorithm.data_collection.data_collection import collect_data
-from recognition_algorithm.utils.smoothing_data import smooth_data_per_num_of_sequences, smooth_data_per_days
-from recognition_algorithm.utils.name_conversion import get_name
+from data_collection.data_collection import collect_data
+from utils.smoothing_data import smooth_data_per_num_of_sequences, smooth_data_per_days
+from utils.name_conversion import get_name
 
 
 @st.cache_data

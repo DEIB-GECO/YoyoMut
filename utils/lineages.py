@@ -4,7 +4,7 @@ from collections.abc import Hashable
 import pandas as pd
 import requests
 import streamlit as st
-from recognition_algorithm.utils.name_conversion import get_aa_parameter
+from utils.name_conversion import get_aa_parameter
 from collections import defaultdict
 
 

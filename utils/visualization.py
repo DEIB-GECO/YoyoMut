@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
 import uuid
-from recognition_algorithm.utils.lineages import add_lineages
+from utils.lineages import add_lineages
 
 @st.cache_data
 def show_mutation_data(all_mutations, selected, min_percentage=15):

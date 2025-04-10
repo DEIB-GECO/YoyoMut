@@ -3,8 +3,8 @@ import time
 
 import requests
 
-from recognition_algorithm.utils.confidence_interval import confidence_interval
-from recognition_algorithm.utils.name_conversion import is_unknown, get_unknown_name, get_file_name
+from utils.confidence_interval import confidence_interval
+from utils.name_conversion import is_unknown, get_unknown_name, get_file_name
 
 
 def is_data_up_to_date(latest_data_id):
