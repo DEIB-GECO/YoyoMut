@@ -8,10 +8,6 @@ from utils.web_data_prep import data_preparation
 st.set_page_config(page_title="Home page", layout="wide")
 
 st.header(f"Welcome!")
-with st.status("Loading data...", expanded=False) as status:
-    smoothed_data_files = data_preparation()
-    status.update(label="Data loaded successfully!", state="complete", expanded=False)
-    st.session_state.smoothed_data_files = smoothed_data_files
 
 st.write("This app is used to classify different mutations on the Spike protein depending on your research needs. "
          "The data used is sourced from [Lapis](https://lapis.cov-spectrum.org/open/v2/docs/getting-started/introduction). ")
@@ -28,4 +24,10 @@ st.write("""
 - **3D protein model**
   - renders a 3D model of the Spike protein, coloring the different groups in different colors
 """)
+
+with st.status("Loading data...", expanded=False) as status:
+    smoothed_data_files = data_preparation()
+    status.update(label="Data loaded successfully!", state="complete", expanded=False)
+    st.session_state.smoothed_data_files = smoothed_data_files
+
 

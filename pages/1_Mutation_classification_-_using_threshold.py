@@ -43,8 +43,8 @@ if submitted:
     st.session_state.min_days = min_days
     st.session_state.min_percentage = min_percentage
 
-if st.session_state.get("form_submitted"):
-    st.session_state.classified_mutations_threshold = classify_mutations_threshold(smoothed_data_files, threshold)
+if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in st.session_state:
+    st.session_state.classified_mutations_threshold = classify_mutations_threshold(smoothed_data_files, threshold, min_days)
 
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
 

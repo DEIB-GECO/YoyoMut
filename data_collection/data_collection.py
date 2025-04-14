@@ -136,4 +136,4 @@ def collect_data():
     print("Finished collecting insertions.")
 
 
-collect_data()
+# collect_data()
