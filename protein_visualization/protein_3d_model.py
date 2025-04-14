@@ -1,8 +1,6 @@
 import html
 
 import streamlit as st
-import stmol
-import py3Dmol
 
 def show_3d_protein(yo_yo_residues, fixated_residues):
 

@@ -73,7 +73,8 @@ def smooth_data_per_num_of_sequences(file_name, path):
     i = 0
     mutated = 0
     curr_total = 0
-    lower_bound = 1 * max_sequenced
+    # lower_bound = 1 * max_sequenced
+    lower_bound = 5000
     smoothed_data = []
     start_date = data['date'][i]
     while i < len(data['date']):

@@ -9,10 +9,12 @@ from utils.name_conversion import get_name
 
 @st.cache_data
 def data_preparation(by_days=False):
+    print("Data preparation:")
     data_path = 'data/'
     # data_path = '../data_collection/data/test_data/'
     files = os.listdir(data_path)
     smoothed_data_files = {}
+
     # for file in files:
     if len(files) == 0:
         collect_data()
