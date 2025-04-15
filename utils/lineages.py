@@ -29,8 +29,6 @@ def add_aliases(lineages, reverse_aliases):
             prefix = '.'.join(split_lin[:i])
             rest = '.'.join(split_lin[i:])
             if prefix in reverse_aliases:
-                print(f"found: ({prefix}:{reverse_aliases[prefix]})")
-                print(f"appending: {reverse_aliases[prefix]}.{rest}")
                 aliases.append(f"{reverse_aliases[prefix]}.{rest}")
         if len(aliases) > 0:
             lineages.loc[lineages['Lineage'] == lin, "Lineages (aliases)"] = f"{lin} ({', '.join(aliases)})"
@@ -95,7 +93,7 @@ def get_lineage_for_hills(mutation, hills):
 
 def add_lineages(mutations):
     for mutation in mutations:
-        if mutations[mutation]['class'] == 'no mutation':
+        if mutations[mutation]['class'] == 'unclassified':
             continue
         else:
             lineages = get_lineage_for_hills(mutation, mutations[mutation]['hills'])

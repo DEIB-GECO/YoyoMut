@@ -1,3 +1,4 @@
+import random
 import time
 
 import pandas as pd
@@ -12,11 +13,29 @@ def show_mutation_data(all_mutations, selected, min_percentage=15):
     fig = go.Figure()
 
     for mutation in selected:
+        r = random.randint(0, 255)
+        g = random.randint(0, 255)
+        b = random.randint(0, 255)
+        alpha = 0.2  # transparency level
+
+        color = f'rgba({r},{g},{b},{alpha})'
+        fig.add_trace(go.Scatter(
+            x=all_mutations[mutation]['data']['start-date'].tolist()
+              + all_mutations[mutation]['data']['start-date'][::-1].tolist(),  # forward + reverse for filling
+            y=all_mutations[mutation]['data']['ci-upper-avg'].tolist() + all_mutations[mutation]['data']['ci-lower-avg'][::-1].tolist(),  # upper then lower reversed
+            fill='toself',
+            fillcolor=color,  # semi-transparent fill
+            line=dict(color=color),  # no line
+            hoverinfo="skip",
+            showlegend=True,
+            name=f'{mutation} 95% CI'
+        ))
         fig.add_trace((go.Scatter(
             x=all_mutations[mutation]['data']['start-date'],
             y=all_mutations[mutation]['data']['avg-proportion'],
             mode='lines+markers',
-            name=mutation
+            name=mutation,
+            line=dict(color=f'rgba({r},{g},{b},1)')
         )))
 
     fig.update_layout(

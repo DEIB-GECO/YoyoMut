@@ -12,11 +12,11 @@ def classify_mutation(df, min_length, last_day='2025-02-25'):
         date_format = '%Y-%m-%d'
         if (datetime.strptime(last_day, date_format) - datetime.strptime(df.iloc[0]['start-date'],
                                                                          date_format)).days < min_length:
-            return 'no mutation'
+            return 'unclassified'
         else:
             return 'fixated'
     else:
-        return 'no mutation'
+        return 'unclassified'
 
 
 @st.cache_data

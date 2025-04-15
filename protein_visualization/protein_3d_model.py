@@ -39,6 +39,7 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
             with fixated_col2:
                 highlight_color_fixated = st.color_picker("Select Highlight Color for Fixated residues", "#008000")
 
+            st.divider()
             submitted = st.form_submit_button("Submit")
     if submitted:
         st.session_state.submitted_3d_form = True

@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from protein_visualization.protein_3d_model import show_3d_protein
-from utils.hill_count import classify_mutations_threshold
+from utils.hill_count import classify_mutations_threshold, classify_mutations_slope
 from utils.name_conversion import get_residues
 from utils.visualization import show_mutation_data
 from utils.web_data_prep import data_preparation
@@ -17,38 +17,54 @@ print('started 3d page')
 start = time.time()
 smoothed_data_files = data_preparation()
 
-@st.cache_data
-def classify_mutations(smoothed_data_files, threshold, min_days):
-    start = time.time()
-    result = classify_mutations_threshold(smoothed_data_files, threshold, min_days)
-    end = time.time()
-    print('classify mutations ended after: ', end-start)
-    return result
 
 submitted = False
-with st.form("parameters", enter_to_submit=False):
-    st.write("Please input parameters for mutation classification")
-    threshold = int(st.number_input('Threshold (%):', value=30, placeholder='30',
-                                                   help="The threshold defines the minimal proportion of sequences "
-                                                        "that must contain the mutation for it to be relevant."
-                                     )) / 100
 
-    min_days = int(st.number_input('Minimum length (in days): ', value=30, placeholder='30',
-                                                  help="The minimal number of days the mutation needs to be present "
-                                                       "to be considered significant."
-                                                  ))
+st.write("Choose which algorithm to use for the visualisation of the 3D protein model:")
+threshold_alg, slope_alg = st.tabs(["Threshold algorithm", "Slope algorithm"])
 
-    submitted = st.form_submit_button("Submit", on_click=lambda: classify_mutations(smoothed_data_files, threshold, min_days))
+with threshold_alg:
+    with st.form("parameters-threshold", enter_to_submit=False):
+        st.write("Please input parameters for mutation classification - threshold algorithm")
+        threshold = int(st.number_input('Threshold (%):', value=30, placeholder='30',
+                                                       help="The threshold defines the minimal proportion of sequences "
+                                                            "that must contain the mutation for it to be relevant."
+                                         )) / 100
 
-if submitted:
+        min_days = int(st.number_input('Minimum length (in days): ', value=30, placeholder='30',
+                                                      help="The minimal number of days the mutation needs to be present "
+                                                           "to be considered significant."
+                                                      ))
+
+        submitted_threshold = st.form_submit_button("Submit")
+with slope_alg:
+    with st.form("parameters-slope", enter_to_submit=False):
+        st.write("Please input parameters for mutation classification")
+        slope_points = int(st.number_input('Number of points used to calculate the slopes: ', value=5, placeholder='5',
+                                           help="The number of data points used to calculate one slope value."
+                                                " The parameter can increase or decrease sensitivity of the algorithm."))
+        submitted_slope = st.form_submit_button("Submit")
+
+if submitted_threshold:
+    st.session_state.submitted_threshold = True
+    st.session_state.submitted_slope = False
     st.session_state.form_3d_submitted = True
     st.session_state.threshold = threshold
     st.session_state.min_days = min_days
+if submitted_slope:
+    st.session_state.submitted_threshold = False
+    st.session_state.submitted_slope = True
+    st.session_state.form_3d_submitted = True
+    st.session_state.slope_points = slope_points
+
 
 if st.session_state.get("form_3d_submitted"):
-    st.session_state.classified_mutations_slope = classify_mutations(smoothed_data_files, threshold, min_days)
-
-    yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_slope)
+    if st.session_state.get("submitted_threshold"):
+        st.session_state.classified_mutations_threshold = classify_mutations_threshold(smoothed_data_files, threshold, min_days)
+        yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
+    elif st.session_state.get("submitted_slope"):
+        st.session_state.classified_mutations_slope = classify_mutations_slope(smoothed_data_files, slope_points)
+        yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_slope)
 
     yo_yo_residues = get_residues(yo_yo_mutations.keys())
     fixated_residues = get_residues(fixated_mutations.keys())
