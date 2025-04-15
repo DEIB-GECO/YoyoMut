@@ -12,8 +12,8 @@ st.header(f"Welcome!")
 st.write("This app is used to classify different mutations on the Spike protein depending on your research needs. "
          "The data used is sourced from [Lapis](https://lapis.cov-spectrum.org/open/v2/docs/getting-started/introduction). ")
 st.write("The mutations can be classified into three classes: *yo-yo*, *fixated* "
-         "or *no mutation*. In order to get started, you will need to choose certain parameters, such as threshold, "
-         "duration and minimal lineage percentage.")
+         "or *unclassified*. In order to get started, you will need to choose certain parameters, such as threshold, "
+         "duration and minimal lineage percentage, or choose the number of points to use for slope calculation.")
 st.write("These parameters affect how the residues, and specific mutations on residues, are classified into mentioned groups.")
 st.write("The classified mutations can be viewed in two ways:")
 st.write("""
@@ -22,7 +22,7 @@ st.write("""
 """)
 st.write("""
 - **3D protein model**
-  - renders a 3D model of the Spike protein, coloring the different groups in different colors
+  - renders a 3D model of the Spike protein, coloring the residues in different colors depending on their classification
 """)
 
 with st.status("Loading data...", expanded=False) as status:
