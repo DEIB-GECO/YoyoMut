@@ -1,10 +1,14 @@
-version: "3.9"
-
 services:
-  streamlit:
-    build: .
+  frontend:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    image: yoyomut_frontend
+    container_name: yoyomut_frontend
     ports:
-      - "8501:8501"
+      - 19278:8501
     environment:
       - STREAMLIT_SERVER_HEADLESS=true
-    command: streamlit run ./Home.py
+    volumes:
+      - ../YoyoMut_data:/app/dynamic_data 
+
