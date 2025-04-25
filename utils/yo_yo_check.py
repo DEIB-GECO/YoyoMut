@@ -3,7 +3,7 @@ from datetime import datetime
 import streamlit as st
 
 
-def classify_mutation(df, min_length, last_day='2025-02-25'):
+def classify_mutation(df, min_length, last_day='2025-03-26'):
     if df.shape[0] > 1:
         return 'yo-yo'
     elif df.shape[0] == 1 and df.iloc[0]['end-date'] != None:

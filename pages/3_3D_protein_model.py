@@ -13,7 +13,6 @@ from utils.yo_yo_check import filter_mutations
 st.set_page_config(page_title="3D protein model", layout="wide")
 st.sidebar.header("3D protein model")
 st.title("3D model of the Spike protein")
-print('started 3d page')
 start = time.time()
 smoothed_data_files = data_preparation()
 
@@ -101,4 +100,4 @@ if st.session_state.get("form_3d_submitted"):
         st.dataframe(other_df, hide_index=False)
 
     end = time.time()
-    print('finished 3d page in ', end-start)
+    # print('finished 3d page in ', end-start)

@@ -102,7 +102,7 @@ def count_hills_slope(df):
 
     if started and not ended:
         date_format = '%Y-%m-%d'
-        date_diff = datetime.strptime('2025-03-30', date_format) - datetime.strptime(curr_start, date_format)
+        date_diff = datetime.strptime('2025-03-26', date_format) - datetime.strptime(curr_start, date_format)
         hills_found.append({'start-date': curr_start,
                             'end-date': None,
                             'length-days': date_diff.days
@@ -129,7 +129,7 @@ def classify_mutations_slope(mutations_data, n):
     for mutation in hills_per_mutation:
         classified_mutations.update({mutation: {'data': mutations_data[mutation],
                                                 'hills': hills_per_mutation[mutation],
-                                                'class': classify_mutation(hills_per_mutation[mutation], min_length=30)
+                                                'class': classify_mutation(hills_per_mutation[mutation], min_length=0)
                                                 }
                                      })
     return classified_mutations
