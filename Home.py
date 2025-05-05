@@ -9,16 +9,18 @@ st.set_page_config(page_title="Home page", layout="wide")
 
 st.header(f"Welcome!")
 
-st.write("This app is used to classify different mutations on the Spike protein depending on your research needs. "
-         "The data used is sourced from [Lapis](https://lapis.cov-spectrum.org/open/v2/docs/getting-started/introduction). ")
-st.write("The mutations can be classified into three classes: *yo-yo*, *fixated* "
-         "or *unclassified*. In order to get started, you will need to choose certain parameters, such as threshold, "
+
+st.write("This app is used to classify mutations on the SARS-CoV-2 Spike protein in time at a global level. "
+         "The data used is sourced from CoV-Spectrum via [Lapis](https://lapis.cov-spectrum.org/open/v2/docs/getting-started/introduction) webservice. "
+         "Files were last-updated on xx-xx-xxxx.")
+st.write("The amino acid residues can be classified into three classes: *unmutated*, *yo-yo mutations* or *fixated mutations*."
+         "In order to get started, you will need to choose certain parameters, such as threshold, "
          "duration and minimal lineage percentage, or choose the number of points to use for slope calculation.")
-st.write("These parameters affect how the residues, and specific mutations on residues, are classified into mentioned groups.")
+st.write("These parameters affect how the residues, and specific mutations on residues, are classified into the above-mentioned groups.")
 st.write("The classified mutations can be viewed in two ways:")
 st.write("""
 - **Mutation classification**
-  - shows graphs with sequences through time, tables with time frames of the mutations, and lineages that were significant during that time period
+  - shows graphs with relative frequency of mutation at a given amino acid residue in time
 """)
 st.write("""
 - **3D protein model**

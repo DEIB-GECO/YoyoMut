@@ -11,21 +11,24 @@ st.set_page_config(page_title="Mutation classification", layout="wide")
 
 smoothed_data_files = data_preparation(by_days=True)
 
-st.markdown("# Mutation classification - slope algorithm")
-st.sidebar.header("Mutation classification - slope algorithm")
+st.markdown("# Classification of residues by prevalence slope analysis")
+st.sidebar.header("Classification of residues by prevalence slope analysis")
 st.write(
-    """Choose parameters to classify mutations as yo-yo, fixated or none using the slope algorithm."""
+    """
+    Choose parameters to classify amino acid residues as unmutated, yo-yo mutated, or fixated mutation using the slope algorithm.
+    """
 )
 
 submitted = False
 with st.form("parameters", enter_to_submit=False):
-    st.write("Please input parameters for mutation classification")
-    slope_points = int(st.number_input('Number of points used to calculate the slopes: ', value=5, placeholder='5',
+    st.write("Please input parameters for amino acid residue classification")
+    slope_points = int(st.number_input('Number of timepoints to calculate the slope: ', value=5, placeholder='5',
                                        help="The number of data points used to calculate one slope value."
                                             " The parameter can increase or decrease sensitivity of the algorithm."))
     st.divider()
     min_percentage = int(
-        st.number_input("Minimal percentage for filtering significant lineages:", value=30, placeholder='30',
+        st.number_input("Minimum relative prevalence for filtering significant PANGO lineages with the selected mutation:",
+                        value=30, placeholder='30',
                         help="The percentage is used to filter out only the lineages that are significant at the"
                              " time period of the mutation being present."))
     st.divider()

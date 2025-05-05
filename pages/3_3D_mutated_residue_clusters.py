@@ -6,13 +6,12 @@ import streamlit as st
 from protein_visualization.protein_3d_model import show_3d_protein
 from utils.hill_count import classify_mutations_threshold, classify_mutations_slope
 from utils.name_conversion import get_residues
-from utils.visualization import show_mutation_data
 from utils.web_data_prep import data_preparation
 from utils.yo_yo_check import filter_mutations
 
-st.set_page_config(page_title="3D protein model", layout="wide")
-st.sidebar.header("3D protein model")
-st.title("3D model of the Spike protein")
+st.set_page_config(page_title="3D mutated residue clusters", layout="wide")
+st.sidebar.header("3D mutated residue clusters")
+st.title("3D mutated residue clusters")
 start = time.time()
 smoothed_data_files = data_preparation()
 
@@ -24,21 +23,21 @@ threshold_alg, slope_alg = st.tabs(["Threshold algorithm", "Slope algorithm"])
 
 with threshold_alg:
     with st.form("parameters-threshold", enter_to_submit=False):
-        st.write("Please input parameters for mutation classification - threshold algorithm")
-        threshold = int(st.number_input('Threshold (%):', value=30, placeholder='30',
+        st.write("Please input parameters for amino acid residue classification")
+        threshold = int(st.number_input('Global relative frequency threshold (%):', value=30, placeholder='30',
                                                        help="The threshold defines the minimal proportion of sequences "
                                                             "that must contain the mutation for it to be relevant."
                                          )) / 100
 
-        min_days = int(st.number_input('Minimum length (in days): ', value=30, placeholder='30',
-                                                      help="The minimal number of days the mutation needs to be present "
+        min_days = int(st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
+                                                      help="Minimal number of days above the selected relative frequency threshold "
                                                            "to be considered significant."
                                                       ))
 
         submitted_threshold = st.form_submit_button("Submit")
 with slope_alg:
     with st.form("parameters-slope", enter_to_submit=False):
-        st.write("Please input parameters for mutation classification")
+        st.write("Please input parameters for amino acid residue classification")
         slope_points = int(st.number_input('Number of points used to calculate the slopes: ', value=5, placeholder='5',
                                            help="The number of data points used to calculate one slope value."
                                                 " The parameter can increase or decrease sensitivity of the algorithm."))
@@ -93,11 +92,10 @@ if st.session_state.get("form_3d_submitted"):
         fixated_df = pd.DataFrame({"Residues": fixated_residues})
         fixated_df["Residues"] = "S:" + fixated_df["Residues"].astype(str)
         st.dataframe(fixated_df, hide_index=False)
-    with st.expander(f"{len(other_residues)} unclassified residues:"):
+    with st.expander(f"{len(other_residues)} unmutated residues:"):
         other_residues.sort()
         other_df = pd.DataFrame({"Residues": other_residues})
         other_df["Residues"] = "S:" + other_df["Residues"].astype(str)
         st.dataframe(other_df, hide_index=False)
 
     end = time.time()
-    # print('finished 3d page in ', end-start)
