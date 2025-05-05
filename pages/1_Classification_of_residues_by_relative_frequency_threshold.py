@@ -11,27 +11,29 @@ st.set_page_config(page_title="Mutation classification", layout="wide")
 
 smoothed_data_files = data_preparation()
 
-st.markdown("# Mutation classification - threshold algorithm")
-st.sidebar.header("Mutation classification - threshold algorithm")
+st.markdown("# Classification of residues by relative frequency threshold")
+st.sidebar.header("Classification of residues by relative frequency threshold")
 st.write(
-    """Choose parameters to classify mutations as yo-yo, fixated or none using the threshold algorithm."""
+    """
+    Choose parameters to classify amino acid residues as unmutated, yo-yo mutated, or fixated mutation using the threshold algorithm.
+    """
 )
 
 submitted = False
 with st.form("parameters", enter_to_submit=False):
-    st.write("Please input parameters for mutation classification")
-    threshold = int(st.number_input('Threshold (%):', value=30, placeholder='30',
+    st.write("Please input parameters for amino acid residue classification")
+    threshold = int(st.number_input('Global relative frequency threshold (%):', value=30, placeholder='30',
                                     help="The threshold defines the minimal proportion of sequences "
                                          "that must contain the mutation for it to be relevant.")) / 100
     st.divider()
 
     min_days = int(st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
-                                   help="The minimal number of days the mutation needs to be present "
+                                   help="Minimal number of days above the selected relative frequency threshold "
                                         "to be considered significant."))
 
     st.divider()
     min_percentage = int(
-        st.number_input("Minimal percentage for filtering significant lineages:", value=30, placeholder='30',
+        st.number_input("Minimum relative prevalence for filtering significant PANGO lineages with the selected mutation:", value=30, placeholder='30',
                         help="The percentage is used to filter out only the lineages that are significant at the"
                              " time period of the mutation being present."))
     st.divider()
@@ -57,7 +59,7 @@ if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in s
     with all_mutations:
         with st.form(key='all', enter_to_submit=False):
             options_all = st.multiselect(
-                "Choose or search for a mutation",
+                "Choose or search for an amino acid residue",
                 st.session_state.classified_mutations_threshold.keys()
             )
 
