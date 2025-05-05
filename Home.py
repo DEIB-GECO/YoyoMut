@@ -12,7 +12,7 @@ st.header(f"Welcome!")
 
 st.write("This app is used to classify mutations on the SARS-CoV-2 Spike protein in time at a global level. "
          "The data used is sourced from CoV-Spectrum via [Lapis](https://lapis.cov-spectrum.org/open/v2/docs/getting-started/introduction) webservice. "
-         "Files were last-updated on xx-xx-xxxx.")
+         "Files were last-updated on 2025-03-26.")
 st.write("The amino acid residues can be classified into three classes: *unmutated*, *yo-yo mutations* or *fixated mutations*."
          "In order to get started, you will need to choose certain parameters, such as threshold, "
          "duration and minimal lineage percentage, or choose the number of points to use for slope calculation.")
