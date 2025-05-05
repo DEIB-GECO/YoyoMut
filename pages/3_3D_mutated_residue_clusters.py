@@ -72,11 +72,24 @@ if st.session_state.get("form_3d_submitted"):
             other_residues.append(i)
 
     with st.expander("Instructions"):
-        st.write("- the model can be rotated")
-        st.write("- zoom in/out is possible by scrolling")
-        st.write("- hovering over a residue shows the amino acid and position")
-        st.write("- clicking on a residue focuses and zooms in on the residue, to reset, click on the residue again")
-        st.write("- different styles and colors can be chosen for each class of residues")
+        st.markdown("### On Desktop")
+        st.markdown("""
+        - **Rotate:** Click and drag with the left mouse button.  
+        - **Zoom:** Scroll with the mouse wheel, use pinch gestures on a trackpad, click and drag with the right mouse 
+        button or hold **Shift** + left click and drag.  
+        - **Focus on residue:** **Click** on a residue to zoom in and center it.  
+        - **Reset view:** Click on the focused residue again.  
+        """)
+        st.markdown("### On Mobile")
+        st.markdown("""
+        - **Rotate:** Drag with one finger.  
+        - **Zoom:** Pinch with two fingers.  
+        - **Focus on residue:** **Tap** on a residue to zoom in and center it. 
+        - **Reset view:** Tap on the focused residue again. 
+        """)
+
+
+
 
 
 
