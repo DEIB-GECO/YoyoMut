@@ -5,8 +5,8 @@ import streamlit as st
 
 from protein_visualization.protein_3d_model import show_3d_protein
 from utils.hill_count import classify_mutations_threshold, classify_mutations_slope
-from utils.name_conversion import get_residues
-from utils.web_data_prep import data_preparation
+from utils.name_conversion import get_positions
+from utils.web_data_prep import data_preparation, get_potential_residues
 from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="3D mutated residue clusters", layout="wide")
@@ -14,6 +14,9 @@ st.sidebar.header("3D mutated residue clusters")
 st.title("3D mutated residue clusters")
 start = time.time()
 smoothed_data_files = data_preparation()
+
+if 'potential_residues' not in st.session_state:
+    st.session_state.potential_residues = get_potential_residues(smoothed_data_files)
 
 
 submitted = False
@@ -64,8 +67,8 @@ if st.session_state.get("form_3d_submitted"):
         st.session_state.classified_mutations_slope = classify_mutations_slope(smoothed_data_files, slope_points)
         yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_slope)
 
-    yo_yo_residues = get_residues(yo_yo_mutations.keys())
-    fixated_residues = get_residues(fixated_mutations.keys())
+    yo_yo_residues = get_positions(yo_yo_mutations.keys())
+    fixated_residues = get_positions(fixated_mutations.keys())
     other_residues = []
     for i in range(1, 1275):
         if i not in yo_yo_residues and i not in fixated_residues:

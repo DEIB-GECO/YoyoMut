@@ -3,6 +3,7 @@ import time
 import streamlit as st
 
 from utils.hill_count import classify_mutations_threshold
+from utils.name_conversion import get_positions
 from utils.visualization import show_mutation_data
 from utils.web_data_prep import data_preparation
 from utils.yo_yo_check import filter_mutations
@@ -50,9 +51,17 @@ if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in s
 
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
 
+    yo_yo_mutations_general = len(get_positions(yo_yo_mutations.keys()))
+    yo_yo_mutations_specific = len(yo_yo_mutations) - yo_yo_mutations_general
+
+    fixated_mutations_general = len(get_positions(fixated_mutations.keys()))
+    fixated_mutations_specific = len(fixated_mutations) - fixated_mutations_general
+
     st.markdown(f"Number of mutations discovered for the selected parameters:: \n"
-                f"- **{len(yo_yo_mutations)}** yo-yo mutations\n"
-                f"- **{len(fixated_mutations)}** fixated mutations\n")
+                f"- **{yo_yo_mutations_general}** general yo-yo mutations\n"
+                f"- **{yo_yo_mutations_specific}** specific yo-yo mutations\n"
+                f"- **{fixated_mutations_general}** general fixated mutations\n"
+                f"- **{fixated_mutations_specific}** specific fixated mutations\n")
 
     all_mutations, yo_yo, fixated = st.tabs(["All", "Yo-yo", "Fixated"])
 
