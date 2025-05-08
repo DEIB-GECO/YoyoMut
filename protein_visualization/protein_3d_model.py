@@ -1,4 +1,5 @@
 import html
+import json
 
 import streamlit as st
 
@@ -44,6 +45,7 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
     if submitted:
         st.session_state.submitted_3d_form = True
     if st.session_state.get("submitted_3d_form"):
+        potentialResi = json.dumps(st.session_state.potential_residues)
 
         html_code = f"""
         <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
@@ -60,6 +62,7 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
               let config = {{ backgroundColor: 'white' }};
               let viewer = $3Dmol.createViewer( element, config );
               let pdbData = `{pdb_data_safe}`;  // Embed PDB data from Python
+              let potentialResi = {potentialResi}
         
           
               viewer.addModel(pdbData, "pdb");  // Load PDB from string
@@ -86,7 +89,8 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
                 let hoverLabel = null;
                 viewer.setHoverable({{}}, true, function(atom) {{
                     if (atom && atom.resn) {{
-                        let labelText = `Residue: ${{atom.resn}} ${{atom.resi}}`;
+                        let potentialResidues = potentialResi[atom.resi] || "No other residues"
+                        let labelText = `Residue: ${{atom.resn}} ${{atom.resi}} (${{potentialResidues}})`;
                         if (hoverLabel) viewer.removeLabel(hoverLabel);
                         hoverLabel = viewer.addLabel(labelText, {{
                             position: {{x: atom.x, y: atom.y, z: atom.z}},

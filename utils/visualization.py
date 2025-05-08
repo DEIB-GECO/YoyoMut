@@ -4,6 +4,7 @@ import time
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
+import matplotlib.cm as cm
 import uuid
 from utils.lineages import add_lineages
 
@@ -12,17 +13,34 @@ def show_mutation_data(all_mutations, selected, min_percentage=15):
     print('started show_mutation_data')
     fig = go.Figure()
 
+    cmap = cm.get_cmap('Set1')
+    colors = [cmap(i) for i in range(9)]
+    colors_hex = [
+        {"r": r, "g": g, "b": b, "alpha": a}
+        for r, g, b, a in colors
+    ]
+
+    cmap = cm.get_cmap('Set2')
+    colors = [cmap(i) for i in range(8)]
+    colors_hex.extend([
+        {"r": r, "g": g, "b": b, "alpha": a}
+        for r, g, b, a in colors
+    ])
+    i = 0
     for mutation in selected:
-        r = random.randint(0, 255)
-        g = random.randint(0, 255)
-        b = random.randint(0, 255)
+        r = colors_hex[i].get('r')
+        g = colors_hex[i].get('g')
+        b = colors_hex[i].get('b')
+        i += 1
+        i = i % len(colors_hex)
         alpha = 0.2  # transparency level
 
         color = f'rgba({r},{g},{b},{alpha})'
         fig.add_trace(go.Scatter(
             x=all_mutations[mutation]['data']['start-date'].tolist()
               + all_mutations[mutation]['data']['start-date'][::-1].tolist(),  # forward + reverse for filling
-            y=all_mutations[mutation]['data']['ci-upper-avg'].tolist() + all_mutations[mutation]['data']['ci-lower-avg'][::-1].tolist(),  # upper then lower reversed
+            y=all_mutations[mutation]['data']['ci-upper-avg'].tolist()
+              + all_mutations[mutation]['data']['ci-lower-avg'][::-1].tolist(),  # upper then lower reversed
             fill='toself',
             fillcolor=color,  # semi-transparent fill
             line=dict(color=color),  # no line

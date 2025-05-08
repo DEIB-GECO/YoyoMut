@@ -1,11 +1,13 @@
 
 
 def get_name(file_name):
+    if '.csv' in file_name:
+        file_name = file_name[:-4]
     if 'ins_S' in file_name:
-        params = file_name[6:-4].replace('_', ':')
+        params = file_name[6:].replace('_', ':')
         name = 'ins_S:' + params
     else:
-        params = file_name[2:-4].replace('_', ':')
+        params = file_name[2:].replace('_', ':')
         name = 'S:' + params
     return name
 
@@ -56,9 +58,15 @@ def get_aa_parameter(name):
         return f"aminoAcidMutations={url_name}"
 
 
-def get_residues(mutations):
+def get_positions(mutations):
     residues = []
     for m in mutations:
         if m[-1].isnumeric():
             residues.append(int(get_position(m)))
     return residues
+
+def get_aa_name(residue):
+    if 'ins_S' in residue:
+        return residue.split(':')[-1]
+    else:
+        return residue.split(get_position(residue))[-1]

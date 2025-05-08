@@ -3,12 +3,11 @@ from utils.confidence_interval import confidence_interval
 import numpy as np
 
 
-def smooth_data_per_days(file_name, path, time_frame=7, overlap=2):
+def smooth_data_per_days(file_name, path, time_frame=7, overlap=0):
     # file_name = file name of the current mutation/insertion to smooth
     # path = path to the directory with mutation/insertion data files
     # time frame = number of days over which the data is averaged
     # overlap = number of days that are overlapping between two averaged data
-    data = []
     with open(path + file_name) as csv_file:
         reader = csv.reader(csv_file)
         col_names = next(reader)
@@ -68,7 +67,7 @@ def smooth_data_per_num_of_sequences(file_name, path):
                 else:
                     data[col_names[i]].append(float(row[i]))
 
-    max_sequenced = max(data['total_count'])
+    # max_sequenced = max(data['total_count'])
 
     i = 0
     mutated = 0
