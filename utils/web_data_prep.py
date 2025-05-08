@@ -1,4 +1,6 @@
 import os
+import re
+
 import streamlit as st
 import pandas as pd
 
@@ -68,3 +70,6 @@ def get_potential_residues(data):
     print(potential_residues)
     return potential_residues_string
 
+def sort_by_residue_number(residue_list):
+    sorted_residues = sorted(residue_list, key=lambda x: int(re.search(r'\d+', x).group()))
+    return sorted_residues

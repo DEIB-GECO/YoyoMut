@@ -5,7 +5,7 @@ import streamlit as st
 from utils.hill_count import classify_mutations_slope
 from utils.name_conversion import get_positions
 from utils.visualization import show_mutation_data
-from utils.web_data_prep import data_preparation
+from utils.web_data_prep import data_preparation, sort_by_residue_number
 from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
@@ -60,10 +60,11 @@ if st.session_state.get("slope_form_submitted"):
     all_mutations, yo_yo, fixated = st.tabs(["All", "Yo-yo", "Fixated"])
 
     with all_mutations:
+        sorted_keys = sort_by_residue_number(st.session_state.classified_mutations_slope.keys())
         with st.form(key='all', enter_to_submit=False):
             options_all = st.multiselect(
                 "Choose or search for a mutation",
-                st.session_state.classified_mutations_slope.keys()
+                sorted_keys
             )
 
             submit_button = st.form_submit_button("Submit")
@@ -73,10 +74,11 @@ if st.session_state.get("slope_form_submitted"):
                 show_mutation_data(st.session_state.classified_mutations_slope, options_all, st.session_state.min_percentage)
 
     with yo_yo:
+        sorted_keys = sort_by_residue_number(yo_yo_mutations.keys())
         with st.form(key='yo-yo', enter_to_submit=False):
             options_yo_yo = st.multiselect(
                 "Choose or search for only yo-yo mutations",
-                yo_yo_mutations.keys()
+                sorted_keys
             )
             submit_button = st.form_submit_button("Submit")
 
@@ -85,10 +87,11 @@ if st.session_state.get("slope_form_submitted"):
                 show_mutation_data(yo_yo_mutations, options_yo_yo, st.session_state.min_percentage)
 
     with fixated:
+        sorted_keys = sort_by_residue_number(fixated_mutations.keys())
         with st.form(key='fixated', enter_to_submit=False):
             options_fixated = st.multiselect(
                 "Choose or search for only fixated mutations",
-                fixated_mutations.keys()
+                sorted_keys
             )
             submit_button = st.form_submit_button("Submit")
 
