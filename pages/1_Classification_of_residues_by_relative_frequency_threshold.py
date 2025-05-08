@@ -5,7 +5,7 @@ import streamlit as st
 from utils.hill_count import classify_mutations_threshold
 from utils.name_conversion import get_positions
 from utils.visualization import show_mutation_data
-from utils.web_data_prep import data_preparation
+from utils.web_data_prep import data_preparation, sort_by_residue_number
 from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
@@ -48,7 +48,6 @@ if submitted:
 
 if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in st.session_state:
     st.session_state.classified_mutations_threshold = classify_mutations_threshold(smoothed_data_files, threshold, min_days)
-
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
 
     yo_yo_mutations_general = len(get_positions(yo_yo_mutations.keys()))
@@ -66,10 +65,11 @@ if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in s
     all_mutations, yo_yo, fixated = st.tabs(["All", "Yo-yo", "Fixated"])
 
     with all_mutations:
+        sorted_keys = sort_by_residue_number(st.session_state.classified_mutations_threshold.keys())
         with st.form(key='all', enter_to_submit=False):
             options_all = st.multiselect(
                 "Choose or search for an amino acid residue",
-                st.session_state.classified_mutations_threshold.keys()
+                sorted_keys
             )
 
             submit_button = st.form_submit_button("Submit")
@@ -80,10 +80,11 @@ if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in s
                                    st.session_state.min_percentage)
 
     with yo_yo:
+        sorted_keys = sort_by_residue_number(yo_yo_mutations.keys())
         with st.form(key='yo-yo', enter_to_submit=False):
             options_yo_yo = st.multiselect(
                 "Choose or search for only yo-yo mutations",
-                yo_yo_mutations.keys()
+                sorted_keys
             )
             submit_button = st.form_submit_button("Submit")
 
@@ -92,10 +93,11 @@ if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in s
                 show_mutation_data(yo_yo_mutations, options_yo_yo, st.session_state.min_percentage)
 
     with fixated:
+        sorted_keys = sort_by_residue_number(fixated_mutations.keys())
         with st.form(key='fixated', enter_to_submit=False):
             options_fixated = st.multiselect(
                 "Choose or search for only fixated mutations",
-                fixated_mutations.keys()
+                sorted_keys
             )
             submit_button = st.form_submit_button("Submit")
 

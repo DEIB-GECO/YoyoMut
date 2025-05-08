@@ -43,7 +43,10 @@ def get_top_lineages(mutation, start_date, end_date):
         base_url += f"&dateTo={end_date}"
     url = base_url + "&fields=nextcladePangoLineage"
     response = requests.get(url).json()
-    total = 0
+    total_count_response = requests.get(base_url).json()
+    if 'data' not in total_count_response:
+        print(total_count_response)
+    total_count = total_count_response['data'][0]['count']
     aggregated_lineages = defaultdict(float)
     if 'data' not in response:
         print(response)
@@ -60,14 +63,12 @@ def get_top_lineages(mutation, start_date, end_date):
         key = entry["nextcladePangoLineage"]
         key = rename_lineage(key, aliases)
         value = entry["count"]
-        total += value
         parts = key.split('.')
         for i in range(1, len(parts) + 1):
             parent = '.'.join(parts[:i])
             aggregated_lineages[parent] += value
-
     aggregated_lineages = pd.DataFrame(list(aggregated_lineages.items()), columns=["Lineage", "Count"])
-    aggregated_lineages["Proportion"] = aggregated_lineages["Count"] * 100 / total
+    aggregated_lineages["Proportion"] = aggregated_lineages["Count"] * 100 / total_count
     if 'min_percentage' not in st.session_state:
         min_percentage = 30
     else:
