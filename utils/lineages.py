@@ -94,7 +94,7 @@ def get_lineage_for_hills(mutation, hills):
 
 def add_lineages(mutations):
     for mutation in mutations:
-        if mutations[mutation]['class'] == 'unclassified':
+        if mutations[mutation]['class'] == 'unclassified' or mutations[mutation]['class'] == 'unmutated':
             continue
         else:
             lineages = get_lineage_for_hills(mutation, mutations[mutation]['hills'])

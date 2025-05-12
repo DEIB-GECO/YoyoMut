@@ -79,10 +79,6 @@ def results_to_PDF(report_path, report_title, report_name, data_dict, parameters
     file_names.sort()
 
     for file in file_names:
-        # if not os.path.exists(data_path + file):  # Skip missing files
-        #     print('The file ', file, ' doesn\'t exist.\n')
-        #     continue
-
         pdf.add_page()
 
         # Add file name as title

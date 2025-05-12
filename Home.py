@@ -7,12 +7,16 @@ from utils.web_data_prep import data_preparation
 
 st.set_page_config(page_title="Home page", layout="wide")
 
-st.header(f"Welcome!")
+if 'last_date' not in st.session_state:
+    with open("data/metadata/last_date.txt", 'r') as f:
+        last_date = f.read()
+        st.session_state.last_date = last_date
 
+st.header(f"Welcome!")
 
 st.write("This app is used to classify mutations on the SARS-CoV-2 Spike protein in time at a global level. "
          "The data used is sourced from CoV-Spectrum via [Lapis](https://lapis.cov-spectrum.org/open/v2/docs/getting-started/introduction) webservice. "
-         "Files were last-updated on 2025-03-26.")
+         "Files were last-updated on ", st.session_state.last_date,".")
 st.write("The amino acid residues can be classified into three classes: *unmutated*, *yo-yo mutations* or *fixated mutations*."
          "In order to get started, you will need to choose certain parameters, such as threshold, "
          "duration and minimal lineage percentage, or choose the number of points to use for slope calculation.")

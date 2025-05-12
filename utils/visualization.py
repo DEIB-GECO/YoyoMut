@@ -10,7 +10,6 @@ from utils.lineages import add_lineages
 
 @st.cache_data
 def show_mutation_data(all_mutations, selected, min_percentage=15):
-    print('started show_mutation_data')
     fig = go.Figure()
 
     cmap = cm.get_cmap('Set1')

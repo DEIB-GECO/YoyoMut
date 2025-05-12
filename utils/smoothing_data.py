@@ -11,7 +11,6 @@ def smooth_data_per_days(file_name, path, time_frame=7, overlap=0):
     with open(path + file_name) as csv_file:
         reader = csv.reader(csv_file)
         col_names = next(reader)
-        # print(col_names)
         data = {}
         for col in col_names:
             data.update({col: []})
@@ -56,7 +55,6 @@ def smooth_data_per_num_of_sequences(file_name, path):
     with open(path + file_name) as csv_file:
         reader = csv.reader(csv_file)
         col_names = next(reader)
-        # print(col_names)
         data = {}
         for col in col_names:
             data.update({col: []})
