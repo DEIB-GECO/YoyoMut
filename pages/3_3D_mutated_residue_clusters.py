@@ -13,10 +13,15 @@ st.set_page_config(page_title="3D mutated residue clusters", layout="wide")
 st.sidebar.header("3D mutated residue clusters")
 st.title("3D mutated residue clusters")
 start = time.time()
-smoothed_data_files = data_preparation()
+
+if 'smoothed_data_files' not in st.session_state:
+    st.session_state.smoothed_data_files = data_preparation()
+if 'smoothed_data_files_by_days' not in st.session_state:
+    st.session_state.smoothed_data_files_by_days = data_preparation(by_days=True)
+
 
 if 'potential_residues' not in st.session_state:
-    st.session_state.potential_residues = get_potential_residues(smoothed_data_files)
+    st.session_state.potential_residues = get_potential_residues(st.session_state.smoothed_data_files)
 
 
 submitted = False
@@ -61,10 +66,10 @@ if submitted_slope:
 
 if st.session_state.get("form_3d_submitted"):
     if st.session_state.get("submitted_threshold"):
-        st.session_state.classified_mutations_threshold = classify_mutations_threshold(smoothed_data_files, threshold, min_days)
+        st.session_state.classified_mutations_threshold = classify_mutations_threshold(st.session_state.smoothed_data_files, threshold, min_days)
         yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
     elif st.session_state.get("submitted_slope"):
-        st.session_state.classified_mutations_slope = classify_mutations_slope(smoothed_data_files, slope_points)
+        st.session_state.classified_mutations_slope = classify_mutations_slope(st.session_state.smoothed_data_files_by_days, slope_points)
         yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_slope)
 
     yo_yo_residues = get_positions(yo_yo_mutations.keys())

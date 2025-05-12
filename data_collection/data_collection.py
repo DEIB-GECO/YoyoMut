@@ -26,6 +26,8 @@ def get_all_mutations(min_sequences=1000):
                 filtered_mutations.append("S:" + str(mutation['position']))
             if "S:" + str(mutation['position']) + "X" not in filtered_mutations:
                 filtered_mutations.append("S:" + str(mutation['position']) + "X")
+            if "S:" + str(mutation['position']) + "." not in filtered_mutations:
+                filtered_mutations.append("S:" + str(mutation['position']) + ".")
     mutations = {}
     start_time = time.time()
     base_url = 'https://lapis.cov-spectrum.org/open/v2/sample/aggregated?'
@@ -41,8 +43,7 @@ def get_all_mutations(min_sequences=1000):
         mutations['dataVersion'] = response['info']['dataVersion']
         mutations[mutation] = response['data']
         end_time_mutation = time.time()
-        print('for mutation: ', end_time_mutation - start_time_mutation)
-    print(mutations)
+        # print('for mutation: ', end_time_mutation - start_time_mutation)
     end_time = time.time()
     print('total time: ', end_time - start_time)
     return mutations
@@ -111,18 +112,24 @@ def json_to_csv(data):
             else:
                 count = mutation_dict[date]
                 proportion = count / total_count
-                ci_lower, ci_upper = confidence_interval(count, date_count) # ????
+                ci_lower, ci_upper = confidence_interval(count, date_count)
             csv_data.append({'date': date,
                              'total_count': total_count,
                              'proportion': proportion,
                              'ci_lower': ci_lower,
                              'ci_upper': ci_upper})
-        csv_file = open('../data/' + get_file_name(mutation), 'w', newline='')
+        csv_file = open('data/data_files/' + get_file_name(mutation), 'w', newline='')
         field_names = ['date', 'total_count', 'proportion', 'ci_lower', 'ci_upper']
         writer = csv.DictWriter(csv_file, fieldnames=field_names)
         writer.writeheader()
         writer.writerows(csv_data)
         csv_file.close()
+
+    last_date = total_per_day['data'][-1]['date']
+    with open('metadata/last_date.txt', 'w') as f:
+        f.write(last_date)
+
+
 
 
 def collect_data():

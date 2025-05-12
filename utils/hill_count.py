@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 import numpy as np
@@ -47,13 +48,19 @@ def count_hills_threshold(df, threshold, min_length):
 
 @st.cache_data
 def classify_mutations_threshold(df_dict, threshold, min_length):
-    print('running all_mutation_classification function')
     hills_per_mutation = {}
+    classified_mutations = {}
     for mutation in df_dict:
+        if '.' in mutation:
+            classified_mutations.update({mutation: {'data': df_dict[mutation],
+                                                    'hills': pd.DataFrame(),
+                                                    'class': 'unmutated'
+                                                    }
+                                         })
+            continue
         hills_df = count_hills_threshold(df_dict.get(mutation), threshold, min_length)
         hills_per_mutation.update({mutation: hills_df})
 
-    classified_mutations = {}
     for mutation in hills_per_mutation:
         classified_mutations.update({mutation: {'data': df_dict[mutation],
                                                 'hills': hills_per_mutation[mutation],
@@ -100,9 +107,14 @@ def count_hills_slope(df):
                                 })
         i += 1
 
+    if 'last_date' not in st.session_state:
+        with open("data/metadata/last_date.txt", 'r') as f:
+            last_date = f.read()
+            st.session_state.last_date = last_date
+
     if started and not ended:
         date_format = '%Y-%m-%d'
-        date_diff = datetime.strptime('2025-03-26', date_format) - datetime.strptime(curr_start, date_format)
+        date_diff = datetime.strptime(st.session_state.last_date, date_format) - datetime.strptime(curr_start, date_format)
         hills_found.append({'start-date': curr_start,
                             'end-date': None,
                             'length-days': date_diff.days
@@ -121,11 +133,18 @@ def slope_algorithm(df, n):
 @st.cache_data
 def classify_mutations_slope(mutations_data, n):
     hills_per_mutation = {}
+    classified_mutations = {}
     for mutation in mutations_data:
+        if '.' in mutation:
+            classified_mutations.update({mutation: {'data': mutations_data[mutation],
+                                                    'hills': pd.DataFrame,
+                                                    'class': 'unmutated'
+                                                    }
+                                         })
+            continue
         hills_found = slope_algorithm(mutations_data[mutation], n)
         hills_per_mutation.update({mutation: hills_found})
 
-    classified_mutations = {}
     for mutation in hills_per_mutation:
         classified_mutations.update({mutation: {'data': mutations_data[mutation],
                                                 'hills': hills_per_mutation[mutation],

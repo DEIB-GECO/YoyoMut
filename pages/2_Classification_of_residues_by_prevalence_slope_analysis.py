@@ -12,6 +12,7 @@ st.set_page_config(page_title="Mutation classification", layout="wide")
 
 smoothed_data_files = data_preparation(by_days=True)
 
+
 st.markdown("# Classification of residues by prevalence slope analysis")
 st.sidebar.header("Classification of residues by prevalence slope analysis")
 st.write(

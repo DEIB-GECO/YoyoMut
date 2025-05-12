@@ -12,7 +12,7 @@ from utils.name_conversion import get_name, get_position, get_aa_name
 @st.cache_data
 def data_preparation(by_days=False):
     print("Data preparation:")
-    data_path = 'data/'
+    data_path = 'data/data_files/'
     # data_path = '../data_collection/data/test_data/'
     files = os.listdir(data_path)
     smoothed_data_files = {}
@@ -32,6 +32,10 @@ def data_preparation(by_days=False):
             smoothed_data = smooth_data_per_num_of_sequences(file, data_path)
         df = pd.DataFrame(smoothed_data)
         smoothed_data_files.update({get_name(file): df})
+
+    with open("data/metadata/last_date.txt", 'r') as f:
+        last_date = f.read()
+        st.session_state.last_date = last_date
     return smoothed_data_files
 
 
@@ -67,7 +71,6 @@ def get_potential_residues(data):
         for pair in potential_residues[position]:
             tmp_string += f"{pair[0]}={pair[1]*100:.2f}%, "
         potential_residues_string[position] = tmp_string[:-2]
-    print(potential_residues)
     return potential_residues_string
 
 def sort_by_residue_number(residue_list):
