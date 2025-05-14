@@ -96,11 +96,6 @@ if st.session_state.get("form_3d_submitted"):
         - **Reset view:** Tap on the focused residue again. 
         """)
 
-
-
-
-
-
     show_3d_protein(yo_yo_residues, fixated_residues)
 
     with st.expander(f"{len(yo_yo_residues)} residues classified as yo-yo:"):
