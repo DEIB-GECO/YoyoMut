@@ -10,7 +10,8 @@ from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
 
-smoothed_data_files = data_preparation(by_days=True)
+if 'smoothed_data_files_days' not in st.session_state:
+    st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
 
 
 st.markdown("# Classification of residues by prevalence slope analysis")
@@ -43,7 +44,9 @@ if submitted:
 
 if st.session_state.get("slope_form_submitted"):
     start = time.time()
-    st.session_state.classified_mutations_slope = classify_mutations_slope(smoothed_data_files, slope_points)
+    st.session_state.classified_mutations_slope = classify_mutations_slope(
+        st.session_state.smoothed_data_files_days,
+        slope_points)
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_slope)
 
     yo_yo_mutations_general = len(get_positions(yo_yo_mutations.keys()))
@@ -53,10 +56,10 @@ if st.session_state.get("slope_form_submitted"):
     fixated_mutations_specific = len(fixated_mutations) - fixated_mutations_general
 
     st.markdown(f"Number of mutations discovered for the selected parameters:: \n"
-                f"- **{yo_yo_mutations_general}** general yo-yo mutations\n"
-                f"- **{yo_yo_mutations_specific}** specific yo-yo mutations\n"
-                f"- **{fixated_mutations_general}** general fixated mutations\n"
-                f"- **{fixated_mutations_specific}** specific fixated mutations\n")
+                f"- **{yo_yo_mutations_general}** general yo-yo mutated residues (any amino acid different than original)\n"
+                f"- **{yo_yo_mutations_specific}** specific yo-yo mutations (specific amino acid it mutated to)\n"
+                f"- **{fixated_mutations_general}** general fixated residues (any amino acid different than original)\n"
+                f"- **{fixated_mutations_specific}** specific fixated mutations (specific amino acid it mutated to\n")
 
     all_mutations, yo_yo, fixated = st.tabs(["All", "Yo-yo", "Fixated"])
 
