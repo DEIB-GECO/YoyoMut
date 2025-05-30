@@ -10,7 +10,8 @@ from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
 
-smoothed_data_files = data_preparation()
+if 'smoothed_data_files_sequences' not in st.session_state:
+    st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
 
 st.markdown("# Classification of residues by relative frequency threshold")
 st.sidebar.header("Classification of residues by relative frequency threshold")
@@ -47,7 +48,9 @@ if submitted:
     st.session_state.min_percentage = min_percentage
 
 if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in st.session_state:
-    st.session_state.classified_mutations_threshold = classify_mutations_threshold(smoothed_data_files, threshold, min_days)
+    st.session_state.classified_mutations_threshold = classify_mutations_threshold(
+        st.session_state.smoothed_data_files_sequences,
+        threshold, min_days)
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
 
     yo_yo_mutations_general = len(get_positions(yo_yo_mutations.keys()))
@@ -57,10 +60,10 @@ if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in s
     fixated_mutations_specific = len(fixated_mutations) - fixated_mutations_general
 
     st.markdown(f"Number of mutations discovered for the selected parameters:: \n"
-                f"- **{yo_yo_mutations_general}** general yo-yo mutations\n"
-                f"- **{yo_yo_mutations_specific}** specific yo-yo mutations\n"
-                f"- **{fixated_mutations_general}** general fixated mutations\n"
-                f"- **{fixated_mutations_specific}** specific fixated mutations\n")
+                f"- **{yo_yo_mutations_general}** general yo-yo mutated residues (any amino acid different than original)\n"
+                f"- **{yo_yo_mutations_specific}** specific yo-yo mutations (specific amino acid it mutated to)\n"
+                f"- **{fixated_mutations_general}** general fixated residues (any amino acid different than original)\n"
+                f"- **{fixated_mutations_specific}** specific fixated mutations (specific amino acid it mutated to\n")
 
     all_mutations, yo_yo, fixated = st.tabs(["All", "Yo-yo", "Fixated"])
 
