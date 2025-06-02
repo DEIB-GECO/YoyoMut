@@ -3,8 +3,8 @@ import json
 
 import streamlit as st
 
-def show_3d_protein(yo_yo_residues, fixated_residues):
 
+def show_3d_protein(yo_yo_residues, fixated_residues):
     pdb_file_path = "./protein_visualization/SPIKE_WT_NoGLYC_NoH.pdb"
     # pdb_file_path = "./protein_visualization/SPIKE_short.pdb"
     with open(pdb_file_path, "r") as file:
@@ -17,8 +17,7 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
     ntd = list(range(27, 293))
     n2r = list(range(293, 331))
     rbd = list(range(331, 542))
-    agss = list(range(14, 21)) + list(range(140, 159)) + list(range(245-265))
-
+    agss = list(range(14, 21)) + list(range(140, 159)) + list(range(245 - 265))
 
     with st.expander("Customize visualization:", expanded=True):
         with st.form("3d_model", enter_to_submit=False):
@@ -92,17 +91,35 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
 
             st.divider()
 
-            show_agss = st.radio("Highlight antigenic supersite (14-20 + 140-158 + 245-264):", ['Yes', 'No'], horizontal=True, index=1)
+            show_agss = st.radio("Highlight antigenic supersite (14-20 + 140-158 + 245-264):", ['Yes', 'No'],
+                                 horizontal=True, index=1)
             antigenic_supersite_col1, antigenic_supersite_col2 = st.columns(2)
             with antigenic_supersite_col1:
                 antigenic_supersite_style = st.radio("Choose the style of the antigenic supersite:", style_choices)
 
             with antigenic_supersite_col2:
-                antigenic_supersite_highlight_color = st.color_picker("Select the color for antigenic supersite", "#808080")
+                antigenic_supersite_highlight_color = st.color_picker("Select the color for antigenic supersite",
+                                                                      "#808080")
 
             st.divider()
 
             submitted = st.form_submit_button("Submit")
+
+    # HTML for the 3D model color legend
+    columns = st.columns(8)
+    names = ['Base color', 'Yo-yo residues', 'Fixated residues', 'SS domain', 'NTD domain', 'N2R domain', 'RBD domain',
+             'Antigenic supersite']
+    colors = [model_color, highlight_color_yo_yo, highlight_color_fixated, ss_highlight_color, ntd_highlight_color,
+              n2r_highlight_color, rbd_highlight_color, antigenic_supersite_highlight_color]
+
+    for col, name, color in zip(columns, names, colors):
+        col.markdown(f"""
+            <div style='display: flex; align-items: center; height: 50px;'>
+                <div style='width: 30px; height: 30px; background-color: {color}; margin-right: 6px; border: 1px solid #000;'></div>
+                <span>{name}</span>
+            </div>
+        """, unsafe_allow_html=True)
+
     if submitted:
         st.session_state.submitted_3d_form = True
     potentialResi = json.dumps(st.session_state.potential_residues)
@@ -116,8 +133,7 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
         if show_rbd == 'No':
             rbd = []
         if show_agss == 'No':
-            agss =[]
-
+            agss = []
 
     html_code = f"""
         <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
