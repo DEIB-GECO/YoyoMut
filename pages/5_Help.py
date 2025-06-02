@@ -45,3 +45,12 @@ the slope needs to be positive and later negative. Each appearance of the mutati
 classification. If none of those patterns are recognized, the residue is classified as unmutated.
 """)
 
+st.markdown("""
+### Generating PDF reports
+Choose which algorithm you want to use to generate a report, modify the parameters and click submit. When the reports
+are ready, you can download them by clicking on the buttons. Two reports will be generated, one showing residues 
+ classified as yo-yo mutations (general and specific mutations) and the other residues 
+ classified as fixated mutations (general and specific mutations). The reports contain information about the 
+ algorithm and parameters used, and for each residue the graph showing relative prevalence of the mutation in time, 
+ as well as time frames when the mutation was active.
+""")
