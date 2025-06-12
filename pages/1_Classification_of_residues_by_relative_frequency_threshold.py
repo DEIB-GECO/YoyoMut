@@ -24,20 +24,23 @@ st.write(
 submitted = False
 with st.form("parameters", enter_to_submit=False):
     st.write("Please input parameters for amino acid residue classification")
-    threshold = int(st.number_input('Global relative frequency threshold (%):', value=30, placeholder='30',
-                                    help="The threshold defines the minimal proportion of sequences "
-                                         "that must contain the mutation for it to be relevant.")) / 100
+    threshold = st.number_input('Global relative frequency threshold (0-1):', value=0.3, placeholder='0.3',
+                                min_value=0.0,
+                                max_value=1.0,
+                                help="The threshold defines the minimal proportion of sequences "
+                                     "that must contain the mutation for it to be relevant.")
     st.divider()
 
-    min_days = int(st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
-                                   help="Minimal number of days above the selected relative frequency threshold "
-                                        "to be considered significant."))
+    min_days = st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
+                               help="Minimal number of days above the selected relative frequency threshold "
+                                    "to be considered significant.")
 
     st.divider()
-    min_percentage = int(
-        st.number_input("Minimum relative prevalence for filtering significant PANGO lineages with the selected mutation:", value=30, placeholder='30',
-                        help="The percentage is used to filter out only the lineages that are significant at the"
-                             " time period of the mutation being present."))
+    min_percentage = st.number_input(
+        "Minimum relative prevalence for filtering significant PANGO lineages with the selected mutation:", value=30,
+        placeholder='30',
+        help="The percentage is used to filter out only the lineages that are significant at the"
+             " time period of the mutation being present.")
     st.divider()
     submitted = st.form_submit_button("Submit")
 
