@@ -35,7 +35,6 @@ if 'slope_submit_button_disabled' not in st.session_state:
 
 submitted = False
 
-threshold_alg, slope_alg = st.tabs(["Threshold algorithm", "Slope algorithm"])
 
 
 def submitted_threshold():
@@ -53,12 +52,15 @@ def submitted_slope():
 def activate_thr_submit_btn():
     st.session_state.threshold_submit_button_disabled = False
     st.session_state.form_3d_submitted = False
+    st.session_state.visualization_form_expanded = True
 
 
 def activate_slope_submit_btn():
     st.session_state.slope_submit_button_disabled = False
     st.session_state.form_3d_submitted = False
+    st.session_state.visualization_form_expanded = True
 
+threshold_alg, slope_alg = st.tabs(["Threshold algorithm", "Slope algorithm"])
 
 with threshold_alg:
     with st.form("parameters-threshold", enter_to_submit=False):
@@ -103,14 +105,14 @@ def get_residue_dataframe(data):
 
 if st.session_state.get("form_3d_submitted"):
     if st.session_state.get("submitted_threshold"):
-        st.header("Classification of residues by relative frequency threshold")
+        st.header("Classification of residues by relative frequency threshold", anchor=False)
         st.session_state.classified_mutations_threshold = classify_mutations_threshold(
             st.session_state.smoothed_data_files_sequences,
             st.session_state.threshold,
             st.session_state.min_days)
         st.session_state.yo_yo_mutations, st.session_state.fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
     elif st.session_state.get("submitted_slope"):
-        st.title("Classification of residues by prevalence slope analysis")
+        st.header("Classification of residues by prevalence slope analysis", anchor=False)
         st.session_state.classified_mutations_slope = classify_mutations_slope(
             st.session_state.smoothed_data_files_days, st.session_state.slope_points)
         st.session_state.yo_yo_mutations, st.session_state.fixated_mutations = filter_mutations(st.session_state.classified_mutations_slope)
