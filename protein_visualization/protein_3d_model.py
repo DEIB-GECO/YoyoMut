@@ -57,6 +57,8 @@ def get_domain_html(data):
         """
     return html_string
 
+def collapse_form():
+    st.session_state.visualization_form_expanded = False
 
 def show_3d_protein(yo_yo_residues, fixated_residues):
     pdb_file_path = "./protein_visualization/SPIKE_WT_NoGLYC_NoH.pdb"
@@ -64,8 +66,9 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
         pdb_data = file.read()
 
     pdb_data_safe = html.escape(pdb_data)
-
-    with st.expander("Advanced visualization options:", expanded=True):
+    if 'visualization_form_expanded' not in st.session_state:
+        st.session_state.visualization_form_expanded = True
+    with st.expander("Advanced visualization options:", expanded=st.session_state.visualization_form_expanded):
         with st.form("3d_model", enter_to_submit=False):
             style_choices = ['sphere', 'stick', 'line', 'cross', 'cartoon']
 
@@ -190,7 +193,7 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
 
             st.divider()
 
-            submitted = st.form_submit_button("Submit")
+            submitted = st.form_submit_button("Submit", on_click=collapse_form)
 
     if submitted:
         st.session_state.submitted_3d_form = True
