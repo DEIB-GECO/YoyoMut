@@ -11,13 +11,18 @@ from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="3D mutated residue clusters", layout="wide")
 st.sidebar.header("3D mutated residue clusters")
-st.title("3D mutated residue clusters")
+st.title("3D mutated residue clusters", anchor=False)
+st.write("Choose which algorithm to use for the visualisation of the 3D protein model:")
 start = time.time()
 
-if 'smoothed_data_files_sequences' not in st.session_state:
-    st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
-if 'smoothed_data_files_days' not in st.session_state:
-    st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
+if 'smoothed_data_files_days' not in st.session_state \
+        or 'smoothed_data_files_sequences' not in st.session_state:
+    with st.status("Loading data...", expanded=False) as status:
+        if 'smoothed_data_files_days' not in st.session_state:
+            st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
+        if 'smoothed_data_files_sequences' not in st.session_state:
+            st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
+        status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 if 'potential_residues' not in st.session_state:
     st.session_state.potential_residues = get_potential_residues(st.session_state.smoothed_data_files_sequences)
@@ -30,7 +35,6 @@ if 'slope_submit_button_disabled' not in st.session_state:
 
 submitted = False
 
-st.write("Choose which algorithm to use for the visualisation of the 3D protein model:")
 threshold_alg, slope_alg = st.tabs(["Threshold algorithm", "Slope algorithm"])
 
 

@@ -10,16 +10,19 @@ from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
 
-if 'smoothed_data_files_sequences' not in st.session_state:
-    st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
+st.title("Classification of residues by relative frequency threshold", anchor=False)
 
-st.markdown("# Classification of residues by relative frequency threshold")
 st.sidebar.header("Classification of residues by relative frequency threshold")
 st.write(
     """
     Choose parameters to classify amino acid residues as unmutated, yo-yo mutated, or fixated mutation using the threshold algorithm.
     """
 )
+
+if 'smoothed_data_files_sequences' not in st.session_state:
+    with st.status("Loading data...", expanded=False) as status:
+        st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
+        status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 submitted = False
 with st.form("parameters", enter_to_submit=False):

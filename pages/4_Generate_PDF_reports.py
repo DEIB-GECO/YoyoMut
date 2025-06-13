@@ -5,14 +5,18 @@ from utils.results_to_report import results_to_PDF
 from utils.web_data_prep import data_preparation
 from utils.yo_yo_check import filter_mutations
 
-st.title("Generate PDF reports")
+st.title("Generate PDF reports", anchor=False)
 st.markdown("Choose the algorithm you want to use, input the parameters and click submit!"
-            " The download buttons will appear when the reports are ready to download.\n\n")
+            " The download buttons will appear when the reports are ready to download.")
 
-if 'smoothed_data_files_sequences' not in st.session_state:
-    st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
-if 'smoothed_data_files_days' not in st.session_state:
-    st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
+if 'smoothed_data_files_days' not in st.session_state \
+        or 'smoothed_data_files_sequences' not in st.session_state:
+    with st.status("Loading data...", expanded=False) as status:
+        if 'smoothed_data_files_days' not in st.session_state:
+            st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
+        if 'smoothed_data_files_sequences' not in st.session_state:
+            st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
+        status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 st.write("Input parameters you want to use for the reports:")
 
