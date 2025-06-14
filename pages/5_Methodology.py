@@ -3,9 +3,9 @@ import sys
 
 sys.path.append("../")
 
-st.set_page_config(page_title="Help", layout="wide")
+st.set_page_config(page_title="Methodology", layout="wide")
 
-st.header(f"Additional information")
+st.header(f"Methodology")
 
 
 st.markdown("""

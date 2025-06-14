@@ -1,5 +1,3 @@
-import time
-
 import streamlit as st
 
 from utils.hill_count import classify_mutations_threshold
@@ -10,34 +8,46 @@ from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
 
-if 'smoothed_data_files_sequences' not in st.session_state:
-    st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
+st.title("Classification of residues by relative frequency threshold", anchor=False)
 
-st.markdown("# Classification of residues by relative frequency threshold")
-st.sidebar.header("Classification of residues by relative frequency threshold")
+sidebar1, sidebar2 = st.sidebar.columns([1, 7], vertical_alignment='center')
+with sidebar1:
+    st.image("./media/running_icon.gif")
+with sidebar2:
+    st.write("Our app computes results and visualizations online, please be patient when you see the running "
+             "icon at the top right corner.")
+
 st.write(
     """
     Choose parameters to classify amino acid residues as unmutated, yo-yo mutated, or fixated mutation using the threshold algorithm.
     """
 )
 
+if 'smoothed_data_files_sequences' not in st.session_state:
+    with st.status("Loading data...", expanded=False) as status:
+        st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
+        status.update(label="Data loaded successfully!", state="complete", expanded=False)
+
 submitted = False
 with st.form("parameters", enter_to_submit=False):
     st.write("Please input parameters for amino acid residue classification")
-    threshold = int(st.number_input('Global relative frequency threshold (%):', value=30, placeholder='30',
-                                    help="The threshold defines the minimal proportion of sequences "
-                                         "that must contain the mutation for it to be relevant.")) / 100
+    threshold = st.number_input('Global relative frequency threshold (0-1):', value=0.3, placeholder='0.3',
+                                min_value=0.0,
+                                max_value=1.0,
+                                help="The threshold defines the minimal proportion of sequences "
+                                     "that must contain the mutation for it to be relevant.")
     st.divider()
 
-    min_days = int(st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
-                                   help="Minimal number of days above the selected relative frequency threshold "
-                                        "to be considered significant."))
+    min_days = st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
+                               help="Minimal number of days above the selected relative frequency threshold "
+                                    "to be considered significant.")
 
     st.divider()
-    min_percentage = int(
-        st.number_input("Minimum relative prevalence for filtering significant PANGO lineages with the selected mutation:", value=30, placeholder='30',
-                        help="The percentage is used to filter out only the lineages that are significant at the"
-                             " time period of the mutation being present."))
+    min_percentage = st.number_input(
+        "Minimum relative prevalence for filtering significant PANGO lineages with the selected mutation:", value=30,
+        placeholder='30',
+        help="The percentage is used to filter out only the lineages that are significant at the"
+             " time period of the mutation being present.")
     st.divider()
     submitted = st.form_submit_button("Submit")
 
@@ -49,7 +59,7 @@ if submitted:
 
 if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in st.session_state:
     st.session_state.classified_mutations_threshold = classify_mutations_threshold(
-        st.session_state.smoothed_data_files_sequences,
+        "smoothed_data_files_sequences",
         threshold, min_days)
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
 
