@@ -1,5 +1,3 @@
-import time
-
 import streamlit as st
 
 from utils.hill_count import classify_mutations_threshold
@@ -12,7 +10,13 @@ st.set_page_config(page_title="Mutation classification", layout="wide")
 
 st.title("Classification of residues by relative frequency threshold", anchor=False)
 
-st.sidebar.header("Classification of residues by relative frequency threshold")
+sidebar1, sidebar2 = st.sidebar.columns([1, 7], vertical_alignment='center')
+with sidebar1:
+    st.image("./media/running_icon.gif")
+with sidebar2:
+    st.write("Our app computes results and visualizations online, please be patient when you see the running "
+             "icon at the top right corner.")
+
 st.write(
     """
     Choose parameters to classify amino acid residues as unmutated, yo-yo mutated, or fixated mutation using the threshold algorithm.
@@ -55,7 +59,7 @@ if submitted:
 
 if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in st.session_state:
     st.session_state.classified_mutations_threshold = classify_mutations_threshold(
-        st.session_state.smoothed_data_files_sequences,
+        "smoothed_data_files_sequences",
         threshold, min_days)
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
 
