@@ -1,5 +1,3 @@
-import traceback
-
 import streamlit as st
 from utils.hill_count import classify_mutations_threshold, classify_mutations_slope
 from utils.results_to_report import results_to_PDF
@@ -7,13 +5,6 @@ from utils.web_data_prep import data_preparation
 from utils.yo_yo_check import filter_mutations
 
 st.title("Generate full reports", anchor=False)
-
-sidebar1, sidebar2 = st.sidebar.columns([1, 7], vertical_alignment='center')
-with sidebar1:
-    st.image("./media/running_icon.gif")
-with sidebar2:
-    st.write("Our app computes results and visualizations online, please be patient when you see the running "
-             "icon at the top right corner.")
 
 st.markdown("Choose the algorithm you want to use, input the parameters and click submit!"
             " The download buttons will appear when the reports are ready to download.")
@@ -27,14 +18,19 @@ if 'smoothed_data_files_days' not in st.session_state \
             st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
         status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
-container = st.container()
-container.write(
+
+reset_button_container = st.container()
+reset_col1, reset_col2, reset_col3 = reset_button_container.columns([6, 5, 0.5], vertical_alignment='center')
+
+reset_col1.write(
     "Report generation may take some time. After the computation is finished you can click the reset button "
     "to choose new parameters and generate new reports.")
+reset_col11, reset_col12 = reset_col1.columns(2)
 
-reset_btn1, reset_btn2, _ = container.columns([1, 1, 2])
+reset_col2.warning("Our app computes results and visualizations online, please be patient when you see the running "
+                   "icon at the top right corner.")
+reset_col3.image("./media/bike_icon.png")
 
-st.write("Input parameters you want to use for the reports:")
 
 if 'threshold_submit_button_disabled_pdf' not in st.session_state:
     st.session_state.threshold_submit_button_disabled_pdf = False
@@ -43,20 +39,20 @@ if 'slope_submit_button_disabled_pdf' not in st.session_state:
     st.session_state.slope_submit_button_disabled_pdf = False
 
 
-def activate_thr_submit_btn():
-    st.session_state.threshold_submit_button_disabled_pdf = False
-
-
-def disable_thr_submit_btn():
+def submit_threshold_form():
     st.session_state.threshold_submit_button_disabled_pdf = True
 
 
-def activate_slope_submit_btn():
-    st.session_state.slope_submit_button_disabled_pdf = False
+def reset_threshold_form():
+    st.session_state.threshold_submit_button_disabled_pdf = False
 
 
-def disable_slope_submit_btn():
+def submit_slope_form():
     st.session_state.slope_submit_button_disabled_pdf = True
+
+
+def reset_slope_form():
+    st.session_state.slope_submit_button_disabled_pdf = False
 
 
 reports_threshold, reports_slope = st.tabs(["Threshold algorithm", "Slope algorithm"])
@@ -76,11 +72,8 @@ with reports_threshold:
                                         "to be considered significant."
                                    )
 
-        submitted_threshold = st.form_submit_button("Submit", on_click=disable_thr_submit_btn,
+        submitted_threshold = st.form_submit_button("Submit", on_click=submit_threshold_form,
                                                     disabled=st.session_state.threshold_submit_button_disabled_pdf)
-    # st.button("Choose new parameters", on_click=activate_thr_submit_btn,
-    #           disabled=not st.session_state.threshold_submit_button_disabled_pdf,
-    #           key='reset_threshold')
 
     # When submit is clicked trigger new computation only if the parameter values changed.
     # Then also delete currently saved reports.
@@ -135,16 +128,16 @@ with reports_threshold:
                                    parameters={'Threshold': st.session_state.threshold,
                                                'Minimum duration (in days)': st.session_state.min_days})
     st.subheader("Download threshold algorithm results:", anchor=False)
-    reset_btn1.button("Reset threshold algorithm parameters", on_click=activate_thr_submit_btn,
-                      disabled=not st.session_state.threshold_submit_button_disabled_pdf,
-                      key='reset_threshold')
-    thr_rep_col1, thr_rep_col2, _ = st.columns([1, 1, 2])
+    reset_col11.button("Reset threshold algorithm parameters", on_click=reset_threshold_form,
+                       disabled=not st.session_state.threshold_submit_button_disabled_pdf,
+                       key='reset_threshold')
+    thr_rep_col1, thr_rep_col2, _ = st.columns([2, 2, 2])
     if 'yo_yo_threshold_report_path' in st.session_state:
         with open(st.session_state.yo_yo_threshold_report_path, "rb") as f:
             report_yo_yo_threshold_data = f.read()
         with thr_rep_col1:
             st.download_button(
-                label="Download yo-yo report",
+                label="Download yo-yo mutations report",
                 help="Download a report for yo-yo mutations classified by the threshold algorithm",
                 data=report_yo_yo_threshold_data,
                 file_name=st.session_state.yo_yo_threshold_report_path.split('/')[-1],
@@ -154,7 +147,7 @@ with reports_threshold:
     else:
         with thr_rep_col1:
             st.download_button(
-                label="Download yo-yo report",
+                label="Download yo-yo mutations report",
                 help="Run the threshold algorithm to generate the reports",
                 data="",
                 disabled=True
@@ -165,7 +158,7 @@ with reports_threshold:
             report_fixated_threshold_data = f.read()
         with thr_rep_col2:
             st.download_button(
-                label="Download fixated report",
+                label="Download fixated mutations report",
                 help="Download a report for fixated mutations classified by the threshold algorithm",
                 data=report_fixated_threshold_data,
                 file_name=st.session_state.fixated_threshold_report_path.split('/')[-1],
@@ -175,7 +168,7 @@ with reports_threshold:
     else:
         with thr_rep_col2:
             st.download_button(
-                label="Download fixated report",
+                label="Download fixated mutations report",
                 help="Run the threshold algorithm to generate the reports",
                 data="",
                 disabled=True
@@ -189,7 +182,7 @@ with reports_slope:
                                            help="The number of data points used to calculate one slope value."
                                                 " The parameter can increase or decrease sensitivity of the algorithm."))
         submitted_slope = st.form_submit_button("Submit",
-                                                on_click=disable_slope_submit_btn,
+                                                on_click=submit_slope_form,
                                                 disabled=st.session_state.slope_submit_button_disabled_pdf)
 
     # When submit is clicked trigger new computation only if the parameter values changed.
@@ -239,16 +232,16 @@ with reports_slope:
                                    parameters={'Time points used to calculate slope': st.session_state.slope_points})
 
     st.subheader("Download slope algorithm results:", anchor=False)
-    reset_btn2.button("Reset slope algorithm parameters", on_click=activate_slope_submit_btn,
-                      disabled=not st.session_state.slope_submit_button_disabled_pdf,
-                      key='reset_slope')
+    reset_col12.button("Reset slope algorithm parameters", on_click=reset_slope_form,
+                       disabled=not st.session_state.slope_submit_button_disabled_pdf,
+                       key='reset_slope')
     slope_rep_col1, slope_rep_col2, _ = st.columns([1, 1, 2])
     if 'yo_yo_slope_report_path' in st.session_state:
         with open(st.session_state.yo_yo_slope_report_path, "rb") as f:
             report_yo_yo_slope_data = f.read()
         with slope_rep_col1:
             st.download_button(
-                label="Download yo-yo report",
+                label="Download yo-yo mutations report",
                 help="Download a report for yo-yo mutations classified by the slope algorithm",
                 data=report_yo_yo_slope_data,
                 file_name=st.session_state.yo_yo_slope_report_path.split('/')[-1],
@@ -258,7 +251,7 @@ with reports_slope:
     else:
         with slope_rep_col1:
             st.download_button(
-                label="Download yo-yo report",
+                label="Download yo-yo mutations report",
                 help="Run the slope algorithm to generate the reports",
                 data="",
                 disabled=True
@@ -269,7 +262,7 @@ with reports_slope:
             report_fixated_slope_data = f.read()
         with slope_rep_col2:
             st.download_button(
-                label="Download fixated report",
+                label="Download fixated mutations report",
                 help="Download a report for fixated mutations classified by the slope algorithm",
                 data=report_fixated_slope_data,
                 file_name=st.session_state.fixated_slope_report_path.split('/')[-1],
@@ -279,7 +272,7 @@ with reports_slope:
     else:
         with slope_rep_col2:
             st.download_button(
-                label="Download fixated report",
+                label="Download fixated mutations report",
                 help="Run the slope algorithm to generate the reports",
                 data="",
                 disabled=True

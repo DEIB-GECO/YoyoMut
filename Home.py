@@ -28,8 +28,8 @@ st.write(f"**YoyoMut** is a tool that allows regular scanning of open SARS-CoV-2
          f"finally, a **3D-protein structure** allows us to identify **spatial clustering of adjacent mutated "
          f"positions**.")
 
-st.write(f"- **Disclaimer:** Currently only the analysis of the Spike protein is available, others "
-         f"will be added in future updates.")
+st.error(f"**Disclaimer:** Currently only the analysis of the Spike protein is available, others "
+         f"will be added in future updates.", icon="ℹ️")
 
 st.write(f"**Systematic monitoring** of these behaviors relieves a heavy burden on immunologists and structuralists; "
          f"our tool has **practical implications for vaccine and therapeutic anti-Spike monoclonal antibody (mAb) "
