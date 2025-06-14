@@ -17,11 +17,11 @@ def classify_mutation(df, min_length):
         date_format = '%Y-%m-%d'
         if (datetime.strptime(st.session_state.last_date, date_format) - datetime.strptime(df.iloc[0]['start-date'],
                                                                                            date_format)).days < min_length:
-            return 'unclassified'
+            return 'unmutated'
         else:
             return 'fixated'
     else:
-        return 'unclassified'
+        return 'unmutated'
 
 
 def filter_mutations(mutations):
