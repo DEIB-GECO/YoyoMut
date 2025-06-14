@@ -20,12 +20,11 @@ st.markdown("Choose the algorithm you want to use, input the parameters and clic
 
 if 'smoothed_data_files_days' not in st.session_state \
         or 'smoothed_data_files_sequences' not in st.session_state:
-    with st.status("Loading data...", expanded=False) as status:
+    with st.spinner("Loading data..."):
         if 'smoothed_data_files_days' not in st.session_state:
             st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
         if 'smoothed_data_files_sequences' not in st.session_state:
             st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
-        status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 container = st.container()
 container.write(
