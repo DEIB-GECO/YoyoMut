@@ -27,8 +27,9 @@ st.write(
 )
 
 if 'smoothed_data_files_days' not in st.session_state:
-    with st.spinner("Loading data..."):
+    with st.status("Loading data...", expanded=False) as status:
         st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
+        status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 submitted = False
 with st.form("parameters", enter_to_submit=False):
@@ -63,11 +64,11 @@ if st.session_state.get("slope_form_submitted"):
     fixated_mutations_general = len(get_positions(fixated_mutations.keys()))
     fixated_mutations_specific = len(fixated_mutations) - fixated_mutations_general
 
-    st.markdown(f"Number of mutations discovered for the selected parameters:: \n"
+    st.markdown(f"Number of mutations discovered for the selected parameters: \n"
                 f"- **{yo_yo_mutations_general}** general yo-yo mutated residues (any amino acid different than original)\n"
                 f"- **{yo_yo_mutations_specific}** specific yo-yo mutations (specific amino acid it mutated to)\n"
                 f"- **{fixated_mutations_general}** general fixated residues (any amino acid different than original)\n"
-                f"- **{fixated_mutations_specific}** specific fixated mutations (specific amino acid it mutated to\n")
+                f"- **{fixated_mutations_specific}** specific fixated mutations (specific amino acid it mutated to)\n")
 
     all_mutations, yo_yo, fixated = st.tabs(["All", "Yo-yo", "Fixated"])
 

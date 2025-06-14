@@ -23,11 +23,12 @@ reset_btn1, reset_btn2, _ = st.columns([1, 1, 2])
 
 if 'smoothed_data_files_days' not in st.session_state \
         or 'smoothed_data_files_sequences' not in st.session_state:
-    with st.spinner("Loading data..."):
+    with st.status("Loading data...", expanded=False) as status:
         if 'smoothed_data_files_days' not in st.session_state:
             st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
         if 'smoothed_data_files_sequences' not in st.session_state:
             st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
+        status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 if 'potential_residues' not in st.session_state:
     st.session_state.potential_residues = get_potential_residues(st.session_state.smoothed_data_files_sequences)
