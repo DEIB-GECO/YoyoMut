@@ -1,8 +1,5 @@
-import time
-
 import pandas as pd
 import streamlit as st
-
 from protein_visualization.protein_3d_model import show_3d_protein
 from utils.hill_count import classify_mutations_threshold, classify_mutations_slope
 from utils.name_conversion import get_positions
@@ -10,10 +7,19 @@ from utils.web_data_prep import data_preparation, get_potential_residues
 from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="3D mutated residue clusters", layout="wide")
-st.sidebar.header("3D mutated residue clusters")
+
+sidebar1, sidebar2 = st.sidebar.columns([1, 7], vertical_alignment='center')
+with sidebar1:
+    st.image("./media/running_icon.gif")
+with sidebar2:
+    st.write("Our app computes results and visualizations online, please be patient when you see the running "
+             "icon at the top right corner.")
+
 st.title("3D mutated residue clusters", anchor=False)
 st.write("Choose which algorithm to use for the visualisation of the 3D protein model:")
-start = time.time()
+reset_button_container = st.container()
+reset_button_container.write("To run the algorithm with new parameters click the reset button.")
+reset_btn1, reset_btn2, _ = st.columns([1, 1, 2])
 
 if 'smoothed_data_files_days' not in st.session_state \
         or 'smoothed_data_files_sequences' not in st.session_state:
@@ -36,17 +42,18 @@ if 'slope_submit_button_disabled' not in st.session_state:
 submitted = False
 
 
-
 def submitted_threshold():
     st.session_state.submitted_threshold = True
     st.session_state.form_3d_submitted = True
     st.session_state.threshold_submit_button_disabled = True
+    st.session_state.submitted_slope = False
 
 
 def submitted_slope():
     st.session_state.submitted_slope = True
     st.session_state.form_3d_submitted = True
     st.session_state.slope_submit_button_disabled = True
+    st.session_state.submitted_threshold = False
 
 
 def activate_thr_submit_btn():
@@ -59,6 +66,15 @@ def activate_slope_submit_btn():
     st.session_state.slope_submit_button_disabled = False
     st.session_state.form_3d_submitted = False
     st.session_state.visualization_form_expanded = True
+
+
+def get_residue_dataframe(data):
+    data.sort()
+    df = pd.DataFrame({"Residues": data})
+    df["Residues"] = "S:" + df["Residues"].astype(str)
+    df.index += 1
+    return df
+
 
 threshold_alg, slope_alg = st.tabs(["Threshold algorithm", "Slope algorithm"])
 
@@ -79,9 +95,11 @@ with threshold_alg:
 
         submitted_threshold = st.form_submit_button("Submit", on_click=submitted_threshold,
                                                     disabled=st.session_state.threshold_submit_button_disabled)
-    st.button("Choose new parameters", on_click=activate_thr_submit_btn,
-              disabled=not st.session_state.threshold_submit_button_disabled,
-              key='reset_threshold')
+
+reset_btn1.button("Reset threshold algorithm parameters", on_click=activate_thr_submit_btn,
+                  disabled=not st.session_state.threshold_submit_button_disabled,
+                  key='reset_threshold')
+
 with slope_alg:
     with st.form("parameters-slope", enter_to_submit=False):
         st.write("Please input parameters for amino acid residue classification")
@@ -91,34 +109,30 @@ with slope_alg:
                         key="slope_points")
         submitted_slope = st.form_submit_button("Submit", on_click=submitted_slope,
                                                 disabled=st.session_state.slope_submit_button_disabled)
-    st.button("Choose new parameters", on_click=activate_slope_submit_btn,
-              disabled=not st.session_state.slope_submit_button_disabled,
-              key='reset_slope')
 
-
-def get_residue_dataframe(data):
-    data.sort()
-    df = pd.DataFrame({"Residues": data})
-    df["Residues"] = "S:" + df["Residues"].astype(str)
-    return df
-
+reset_btn2.button("Reset slope algorithm parameters", on_click=activate_slope_submit_btn,
+                  disabled=not st.session_state.slope_submit_button_disabled,
+                  key='reset_slope')
 
 if st.session_state.get("form_3d_submitted"):
     if st.session_state.get("submitted_threshold"):
         st.header("Classification of residues by relative frequency threshold", anchor=False)
         st.session_state.classified_mutations_threshold = classify_mutations_threshold(
-            st.session_state.smoothed_data_files_sequences,
+            "smoothed_data_files_sequences",
             st.session_state.threshold,
             st.session_state.min_days)
-        st.session_state.yo_yo_mutations, st.session_state.fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
+        st.session_state.yo_yo_mutations, st.session_state.fixated_mutations = \
+            filter_mutations(st.session_state.classified_mutations_threshold)
     elif st.session_state.get("submitted_slope"):
         st.header("Classification of residues by prevalence slope analysis", anchor=False)
         st.session_state.classified_mutations_slope = classify_mutations_slope(
-            st.session_state.smoothed_data_files_days, st.session_state.slope_points)
-        st.session_state.yo_yo_mutations, st.session_state.fixated_mutations = filter_mutations(st.session_state.classified_mutations_slope)
+            "smoothed_data_files_days", st.session_state.slope_points)
+        st.session_state.yo_yo_mutations, st.session_state.fixated_mutations = \
+            filter_mutations(st.session_state.classified_mutations_slope)
 
     yo_yo_residues = get_positions(st.session_state.yo_yo_mutations.keys())
     fixated_residues = get_positions(st.session_state.fixated_mutations.keys())
+
     other_residues = []
     for i in range(1, 1275):
         if i not in yo_yo_residues and i not in fixated_residues:
@@ -142,16 +156,14 @@ if st.session_state.get("form_3d_submitted"):
         """)
 
     show_3d_protein(yo_yo_residues, fixated_residues)
-
     col1, col2, col3 = st.columns(3)
     with col1:
-        with st.expander(f"{len(yo_yo_residues)} residues classified as yo-yo:"):
-            st.dataframe(get_residue_dataframe(yo_yo_residues), hide_index=False)
+        st.write(f"**{len(yo_yo_residues)}** residues classified as *yo-yo*:")
+        st.dataframe(get_residue_dataframe(yo_yo_residues), hide_index=False)
     with col2:
-        with st.expander(f"{len(fixated_residues)} residues classified as fixated:"):
-            st.dataframe(get_residue_dataframe(fixated_residues), hide_index=False)
+        st.write(f"**{len(fixated_residues)}** residues classified as *fixated*:")
+        st.dataframe(get_residue_dataframe(fixated_residues), hide_index=False)
     with col3:
-        with st.expander(f"{len(other_residues)} unmutated residues:"):
-            st.dataframe(get_residue_dataframe(other_residues), hide_index=False)
+        st.write(f"**{len(other_residues)}** *unmutated* residues:")
+        st.dataframe(get_residue_dataframe(other_residues), hide_index=False)
 
-    end = time.time()

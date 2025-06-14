@@ -113,21 +113,21 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
             st.divider()
 
             # domains: SS (1-26), NTD (residues 27-292), N2R (293-330), and RBD (331-541)
-            ss_col1, ss_col2, ss_col3 = st.columns([1, 1.5, 2])
-            with ss_col1:
-                st.radio("Highlight SS domain (1-26):", ['Yes', 'No'], horizontal=True, index=1,
-                         key="show_ss")
-                # show_ss = st.toggle("Highlight SS domain (1-26):", key="show_ss")
-            with ss_col2:
-                st.segmented_control("Choose the style of the SS domain:", style_choices,
-                                     selection_mode="single",
-                                     default="sphere",
-                                     key="ss_style")
+            # ss_col1, ss_col2, ss_col3 = st.columns([1, 1.5, 2])
+            # with ss_col1:
+            #     st.radio("Highlight SS domain (1-26):", ['Yes', 'No'], horizontal=True, index=1,
+            #              key="show_ss")
+            #     # show_ss = st.toggle("Highlight SS domain (1-26):", key="show_ss")
+            # with ss_col2:
+            #     st.segmented_control("Choose the style of the SS domain:", style_choices,
+            #                          selection_mode="single",
+            #                          default="sphere",
+            #                          key="ss_style")
 
-            with ss_col3:
-                st.color_picker("Select the color for the SS domain", "#808080",
-                                key="ss_color")
-            st.divider()
+            # with ss_col3:
+            #     st.color_picker("Select the color for the SS domain", "#808080",
+            #                     key="ss_color")
+            # st.divider()
 
             ntd_col1, ntd_col2, ntd_col3 = st.columns([1, 1.5, 2])
             with ntd_col1:
