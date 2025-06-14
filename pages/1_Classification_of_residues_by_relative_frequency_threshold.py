@@ -24,9 +24,8 @@ st.write(
 )
 
 if 'smoothed_data_files_sequences' not in st.session_state:
-    with st.status("Loading data...", expanded=False) as status:
+    with st.spinner("Loading data..."):
         st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
-        status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 submitted = False
 with st.form("parameters", enter_to_submit=False):
