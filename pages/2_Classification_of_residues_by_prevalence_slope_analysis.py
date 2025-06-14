@@ -10,17 +10,26 @@ from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
 
-if 'smoothed_data_files_days' not in st.session_state:
-    st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
+sidebar1, sidebar2 = st.sidebar.columns([1,7], vertical_alignment='center')
+with sidebar1:
+    st.image("./media/running_icon.gif")
+with sidebar2:
+    st.write("Our app computes results and visualizations online, please be patient when you see the running "
+             "icon at the top right corner.")
 
 
-st.markdown("# Classification of residues by prevalence slope analysis")
-st.sidebar.header("Classification of residues by prevalence slope analysis")
+st.title("Classification of residues by prevalence slope analysis", anchor=False)
+
 st.write(
     """
     Choose parameters to classify amino acid residues as unmutated, yo-yo mutated, or fixated mutation using the slope algorithm.
     """
 )
+
+if 'smoothed_data_files_days' not in st.session_state:
+    with st.status("Loading data...", expanded=False) as status:
+        st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
+        status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 submitted = False
 with st.form("parameters", enter_to_submit=False):
@@ -45,7 +54,7 @@ if submitted:
 if st.session_state.get("slope_form_submitted"):
     start = time.time()
     st.session_state.classified_mutations_slope = classify_mutations_slope(
-        st.session_state.smoothed_data_files_days,
+        "smoothed_data_files_days",
         slope_points)
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_slope)
 

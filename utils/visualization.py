@@ -8,7 +8,7 @@ import matplotlib.cm as cm
 import uuid
 from utils.lineages import add_lineages
 
-@st.cache_data
+
 def show_mutation_data(all_mutations, selected, min_percentage=15):
     fig = go.Figure()
 
@@ -66,8 +66,9 @@ def show_mutation_data(all_mutations, selected, min_percentage=15):
     selected_mutations = {}
     for mutation in selected:
         selected_mutations[mutation] = all_mutations[mutation]
-    add_lineages(selected_mutations)
 
+    with st.spinner("Loading additional information..."):
+        add_lineages(selected_mutations)
 
     for mutation in selected:
         with st.expander(f"**{mutation}**"):
@@ -91,5 +92,5 @@ def show_mutation_data(all_mutations, selected, min_percentage=15):
                                  hide_index=True,
                                  column_order=("Lineages (aliases)", "Proportion"),
                                  column_config={
-                                    "Proportion": st.column_config.NumberColumn(format="%.2f%%")
+                                     "Proportion": st.column_config.NumberColumn(format="%.2f%%")
                                  })
