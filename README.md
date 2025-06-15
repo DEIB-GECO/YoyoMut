@@ -1,5 +1,4 @@
 # YoyoMut
-Repository for Jana's thesis yoyo and fixated mutations recognition and 3D protein visualization
 
 Reversion of amino acid mutations in structural proteins is common in viral evolution. SARS-CoV-2 provides an unprecedented opportunity for ecological studies, thanks to the abundance of available whole genome sequences.
 
@@ -34,16 +33,16 @@ Chen, C., et al. "CoV-Spectrum: Analysis of globally shared SARS-CoV-2 data to I
 
 ## Contacts
 
-Anna Bernasconi
-https://annabernasconi.faculty.polimi.it/
-anna.bernasconi@polimi.it
-Phone: +39 02 2399 3494
+Anna Bernasconi, https://annabernasconi.faculty.polimi.it/
+
+anna.bernasconi@polimi.it, Phone: +39 02 2399 3494
 
 Contributors
-Jana Penic
 
-Dr. Tommaso Alfonsi
-Prof. Anna Bernasconi
+- Jana Penic
+- Dr. Tommaso Alfonsi
+- Prof. Anna Bernasconi
+
 Dipartimento di Elettronica, Informazione e Bioingegneria - Politecnico di Milano
 Via Ponzio 34/5 Milano
 20133 Milano
@@ -51,14 +50,10 @@ Italy
 
 with the collaboration of:
 
-Dr. Daniele Focosi
-Pisa University Hospital
+Dr. Daniele Focosi (Pisa University Hospital)
 
-Dr. Fabrizio Maggi
-National Institute for Infectious Diseases Lazzaro Spallanzani
+Dr. Fabrizio Maggi (National Institute for Infectious Diseases Lazzaro Spallanzani)
 
-Prof. Giovanni Chillemi
-Università della Tuscia
+Prof. Giovanni Chillemi (Università della Tuscia)
 
-Dr. Ingrid Guarnetti Prandi
-Independent Researcher
+Dr. Ingrid Guarnetti Prandi (Independent Researcher)
