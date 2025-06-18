@@ -11,4 +11,4 @@ services:
       - STREAMLIT_SERVER_HEADLESS=true
     volumes:
       - ../YoyoMut_data:/app/dynamic_data 
-
+    restart: unless-stopped
