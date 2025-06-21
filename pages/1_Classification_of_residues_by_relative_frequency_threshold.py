@@ -3,7 +3,7 @@ import streamlit as st
 from utils.hill_count import classify_mutations_threshold
 from utils.name_conversion import get_positions
 from utils.visualization import show_mutation_data
-from utils.web_data_prep import data_preparation, sort_by_residue_number
+from utils.web_data_prep import sort_by_residue_number, load_data
 from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
@@ -27,9 +27,10 @@ reset_col3.image("./media/bike_icon.png")
 if "threshold_class_submit_btn_disabled" not in st.session_state:
     st.session_state.threshold_class_submit_btn_disabled = False
 
-if 'smoothed_data_files_sequences' not in st.session_state:
+if 'smoothed_data_files_days' not in st.session_state \
+        or 'smoothed_data_files_sequences' not in st.session_state:
     with st.status("Loading data...", expanded=False) as status:
-        st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
+        st.session_state.smoothed_data_files_days, st.session_state.smoothed_data_files_sequences = load_data()
         status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 
@@ -46,6 +47,10 @@ def reset_form():
 submitted = False
 with st.form("parameters", enter_to_submit=False):
     st.write("Please input parameters for amino acid residue classification")
+    st.selectbox("Choose the protein:",
+                 options=st.session_state.smoothed_data_files_days.keys(),
+                 key="protein_threshold")
+    st.divider()
     st.number_input('Global relative frequency threshold (0-1):', value=0.3, placeholder='0.3',
                     min_value=0.0,
                     max_value=1.0,
@@ -77,7 +82,11 @@ reset_col1.button("Reset algorithm parameters", on_click=reset_form,
 if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in st.session_state:
     st.session_state.classified_mutations_threshold = classify_mutations_threshold(
         "smoothed_data_files_sequences",
-        st.session_state.threshold, st.session_state.min_days)
+        st.session_state.protein_threshold,
+        st.session_state.threshold,
+        st.session_state.min_days)
+    st.session_state.protein = st.session_state.protein_threshold
+
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_threshold)
 
     yo_yo_mutations_general = len(get_positions(yo_yo_mutations.keys()))

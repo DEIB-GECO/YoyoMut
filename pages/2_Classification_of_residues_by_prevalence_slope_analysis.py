@@ -5,7 +5,7 @@ import streamlit as st
 from utils.hill_count import classify_mutations_slope
 from utils.name_conversion import get_positions
 from utils.visualization import show_mutation_data
-from utils.web_data_prep import data_preparation, sort_by_residue_number
+from utils.web_data_prep import sort_by_residue_number, load_data
 from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
@@ -29,9 +29,10 @@ reset_col3.image("./media/bike_icon.png")
 if "slope_class_submit_btn_disabled" not in st.session_state:
     st.session_state.slope_class_submit_btn_disabled = False
 
-if 'smoothed_data_files_days' not in st.session_state:
+if 'smoothed_data_files_days' not in st.session_state \
+        or 'smoothed_data_files_sequences' not in st.session_state:
     with st.status("Loading data...", expanded=False) as status:
-        st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
+        st.session_state.smoothed_data_files_days, st.session_state.smoothed_data_files_sequences = load_data()
         status.update(label="Data loaded successfully!", state="complete", expanded=False)
 
 
@@ -47,6 +48,10 @@ def reset_form():
 
 with st.form("parameters", enter_to_submit=False):
     st.write("Please input parameters for amino acid residue classification")
+    st.selectbox("Choose the protein:",
+                 options=st.session_state.smoothed_data_files_days.keys(),
+                 key="protein_slope")
+    st.divider()
     st.number_input('Number of timepoints to calculate the slope: ', value=5, placeholder='5',
                     help="The number of data points used to calculate one slope value."
                          " The parameter can increase or decrease sensitivity of the algorithm.",
@@ -64,15 +69,17 @@ with st.form("parameters", enter_to_submit=False):
                           disabled=st.session_state.slope_class_submit_btn_disabled)
 
 reset_col1.button("Reset algorithm parameters", on_click=reset_form,
-                              disabled=not st.session_state.slope_class_submit_btn_disabled,
-                              key='reset_slope_alg')
-
+                  disabled=not st.session_state.slope_class_submit_btn_disabled,
+                  key='reset_slope_alg')
 
 if st.session_state.get("slope_form_submitted"):
     start = time.time()
     st.session_state.classified_mutations_slope = classify_mutations_slope(
         "smoothed_data_files_days",
+        st.session_state.protein_slope,
         st.session_state.slope_points)
+    st.session_state.protein = st.session_state.protein_slope
+
     yo_yo_mutations, fixated_mutations = filter_mutations(st.session_state.classified_mutations_slope)
 
     yo_yo_mutations_general = len(get_positions(yo_yo_mutations.keys()))

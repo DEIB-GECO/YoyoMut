@@ -8,7 +8,6 @@ import streamlit as st
 from scipy.stats import linregress
 
 
-# @st.cache_data
 def count_hills_threshold(df, threshold, min_length):
     date_format = '%Y-%m-%d'
     df['above-threshold'] = df['avg-proportion'] > threshold
@@ -47,8 +46,8 @@ def count_hills_threshold(df, threshold, min_length):
 
 
 @st.cache_data
-def classify_mutations_threshold(df_dict_key, threshold, min_length):
-    df_dict = st.session_state.get(df_dict_key)
+def classify_mutations_threshold(df_dict_key, protein, threshold, min_length):
+    df_dict = st.session_state.get(df_dict_key)[protein]
     hills_per_mutation = {}
     classified_mutations = {}
     for mutation in df_dict:
@@ -69,12 +68,6 @@ def classify_mutations_threshold(df_dict_key, threshold, min_length):
                                                 }
                                      })
     return classified_mutations
-
-
-def get_slope(values):
-    x = np.arange(len(values))  # use relative position (0, 1, ..., n-1) as x
-    slope, _, _, _, _ = linregress(x, values)
-    return slope
 
 
 def count_hills_slope(df):
@@ -161,8 +154,8 @@ def slope_algorithm(df, n):
 
 
 @st.cache_data
-def classify_mutations_slope(mutations_data_key, n):
-    mutations_data = st.session_state.get(mutations_data_key).copy()
+def classify_mutations_slope(mutations_data_key, protein, n):
+    mutations_data = st.session_state.get(mutations_data_key)[protein]
     hills_per_mutation = {}
     classified_mutations = {}
     for mutation in mutations_data:

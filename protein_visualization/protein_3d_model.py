@@ -43,6 +43,8 @@ def get_colors_for_legend():
 
 
 def get_domain_html(data):
+    if st.session_state.protein != 'S':
+        return ""
     html_string = f""
     for k in data:
         if k in ["base", "yo_yo", "fixated"]:
@@ -57,11 +59,25 @@ def get_domain_html(data):
         """
     return html_string
 
+
 def collapse_form():
     st.session_state.visualization_form_expanded = False
 
+
 def show_3d_protein(yo_yo_residues, fixated_residues):
-    pdb_file_path = "./protein_visualization/SPIKE_WT_NoGLYC_NoH.pdb"
+    pdb_file_paths = {
+        'S': "./protein_visualization/SPIKE_WT_NoGLYC_NoH.pdb",
+        'E': "./protein_visualization/E_7k3g.pdb",
+        'M': "./protein_visualization/M_8ctk.pdb",
+        'ORF3a': "./protein_visualization/ORF3a_6xdc.pdb",
+        'ORF7a': "./protein_visualization/ORF7a_6w37.pdb",
+        'ORF8': "./protein_visualization/ORF8_7jtl.pdb",
+        'ORF9b': "./protein_visualization/ORF9b_6z4u.pdb",
+    }
+    if st.session_state.protein not in pdb_file_paths:
+        st.info(f"The visualization for {st.session_state.protein} is not available yet.")
+        return
+    pdb_file_path = pdb_file_paths[st.session_state.protein]
     with open(pdb_file_path, "r") as file:
         pdb_data = file.read()
 
@@ -74,7 +90,6 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
 
             model_col1, model_col2 = st.columns(2)
             with model_col1:
-                # style = st.radio("Choose the style of the protein model:", style_choices)
                 style = st.segmented_control("Choose the style of the protein model:", style_choices,
                                              selection_mode="single",
                                              default="sphere",
@@ -215,7 +230,7 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
 
         domain_coloring_html = get_domain_html(visualization_data)
 
-        potentialResi = json.dumps(st.session_state.potential_residues)
+        potentialResi = json.dumps(st.session_state.potential_residues[st.session_state.protein])
 
         html_code = f"""
             <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
