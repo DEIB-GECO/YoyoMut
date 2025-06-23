@@ -70,8 +70,10 @@ def reset_slope_form():
 
 def get_residue_dataframe(data):
     data.sort()
+    print(data)
     df = pd.DataFrame({"Residues": data})
-    df["Residues"] = f"{st.session_state.protein}:{df['Residues'].astype(str)}"
+    print(df)
+    df["Residues"] = st.session_state.protein + ':' + df['Residues'].astype(str)
     df.index += 1
     return df
 
