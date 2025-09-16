@@ -26,8 +26,8 @@ def is_data_up_to_date(latest_data_id):
 def get_all_mutations(min_sequences=1000):
     all_mutations_url = "https://lapis.cov-spectrum.org/open/v2/sample/aminoAcidMutations?minProportion=0&orderBy=mutation"
     data = requests.get(all_mutations_url).json()['data']
-    proteins = ['E', 'M', 'N', 'ORF1a', 'ORF1b', 'ORF3a', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9b', 'S']
-    # proteins = ['S']
+    # proteins = ['E', 'M', 'N', 'ORF1a', 'ORF1b', 'ORF3a', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9b', 'S']
+    proteins = ['S']
     filtered_mutations = {}
     for p in proteins:
         filtered_mutations[p] = []
@@ -156,7 +156,7 @@ def json_to_csv(data):
         csv_file.close()
 
     last_date = total_per_day['data'][-1]['date']
-    with open('metadata/last_date.txt', 'w') as f:
+    with open('../data/metadata/last_date.txt', 'w') as f:
         f.write(last_date)
 
 

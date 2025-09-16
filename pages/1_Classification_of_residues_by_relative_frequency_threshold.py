@@ -2,7 +2,8 @@ import streamlit as st
 
 from utils.hill_count import classify_mutations_threshold
 from utils.name_conversion import get_positions
-from utils.visualization import show_mutation_data
+from utils.visualization import show_mutation_data, show_yoyo_by_num_of_hills, show_yoyo_by_start_date, \
+    show_yoyo_by_hill_length
 from utils.web_data_prep import sort_by_residue_number, load_data
 from utils.yo_yo_check import filter_mutations
 
@@ -81,7 +82,7 @@ reset_col1.button("Reset algorithm parameters", on_click=reset_form,
 
 if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in st.session_state:
     st.session_state.classified_mutations_threshold = classify_mutations_threshold(
-        "smoothed_data_files_sequences",
+        "smoothed_data_files_days",
         st.session_state.protein_threshold,
         st.session_state.threshold,
         st.session_state.min_days)
@@ -143,3 +144,15 @@ if st.session_state.get("form_submitted") or 'classify_mutations_threshold' in s
             if submit_button:
                 st.session_state.options_all = options_all
                 show_mutation_data(fixated_mutations, options_fixated, st.session_state.min_percentage)
+
+
+    st.divider()
+    st.subheader("Additional visualizations of the results")
+    show_yoyo_by_num_of_hills(yo_yo_mutations,
+                              title=f"Threshold = {st.session_state.threshold}, Min days = {st.session_state.min_days}")
+
+    show_yoyo_by_start_date(yo_yo_mutations,
+                              title=f"Threshold = {st.session_state.threshold}, Min days = {st.session_state.min_days}")
+
+    show_yoyo_by_hill_length(yo_yo_mutations,
+                              title=f"Threshold = {st.session_state.threshold}, Min days = {st.session_state.min_days}")

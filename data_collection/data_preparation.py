@@ -43,4 +43,3 @@ def data_preparation():
         df_seq.to_csv('../data/smoothed_protein_data/' + folder + '_seq.csv')
 
 
-# data_preparation()

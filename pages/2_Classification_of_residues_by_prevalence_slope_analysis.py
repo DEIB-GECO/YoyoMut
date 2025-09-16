@@ -4,7 +4,8 @@ import streamlit as st
 
 from utils.hill_count import classify_mutations_slope
 from utils.name_conversion import get_positions
-from utils.visualization import show_mutation_data
+from utils.visualization import show_mutation_data, show_yoyo_by_num_of_hills, show_yoyo_by_start_date, \
+    show_yoyo_by_hill_length
 from utils.web_data_prep import sort_by_residue_number, load_data
 from utils.yo_yo_check import filter_mutations
 
@@ -75,7 +76,7 @@ reset_col1.button("Reset algorithm parameters", on_click=reset_form,
 if st.session_state.get("slope_form_submitted"):
     start = time.time()
     st.session_state.classified_mutations_slope = classify_mutations_slope(
-        "smoothed_data_files_days",
+        "smoothed_data_files_sequences",
         st.session_state.protein_slope,
         st.session_state.slope_points)
     st.session_state.protein = st.session_state.protein_slope
@@ -136,3 +137,15 @@ if st.session_state.get("slope_form_submitted"):
             if submit_button:
                 st.session_state.options_all = options_all
                 show_mutation_data(fixated_mutations, options_fixated, st.session_state.min_percentage)
+
+
+    st.divider()
+    st.subheader("Additional visualizations of the results")
+    show_yoyo_by_num_of_hills(yo_yo_mutations,
+                              title=f"Slope points = {st.session_state.slope_points}")
+
+    show_yoyo_by_start_date(yo_yo_mutations,
+                              title=f"Slope points = {st.session_state.slope_points}")
+
+    show_yoyo_by_hill_length(yo_yo_mutations,
+                              title=f"Slope points = {st.session_state.slope_points}")

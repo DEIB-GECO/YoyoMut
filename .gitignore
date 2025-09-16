@@ -3,4 +3,5 @@ graphs/
 reports/
 __pycache__/
 __init__.py
-.idea
+.idea/
+data/

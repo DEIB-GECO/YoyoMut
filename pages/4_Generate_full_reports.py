@@ -92,7 +92,7 @@ with reports_threshold:
     # Running the algorithm
     if st.session_state.get("submitted_threshold"):
         st.session_state.classified_mutations_threshold = \
-            classify_mutations_threshold("smoothed_data_files_sequences",
+            classify_mutations_threshold("smoothed_data_files_days",
                                          st.session_state.protein_threshold,
                                          st.session_state.threshold,
                                          st.session_state.min_days)
@@ -204,7 +204,7 @@ with reports_slope:
     # Running the algorithm
     if st.session_state.get("submitted_slope"):
         st.session_state.classified_mutations_slope = \
-            classify_mutations_slope("smoothed_data_files_days",
+            classify_mutations_slope("smoothed_data_files_sequences",
                                      st.session_state.protein_slope,
                                      slope_points)
         st.session_state.protein = st.session_state.protein_slope
