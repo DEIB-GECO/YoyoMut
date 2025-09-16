@@ -57,7 +57,7 @@ def get_all_mutations(min_sequences=1000):
             mutations['dataVersion'] = response['info']['dataVersion']
             mutations[mutation] = response['data']
             end_time_mutation = time.time()
-            print('for mutation: ', end_time_mutation - start_time_mutation)
+            # print('for mutation: ', end_time_mutation - start_time_mutation)
     end_time = time.time()
     print('total time: ', end_time - start_time)
     return mutations
@@ -156,6 +156,8 @@ def json_to_csv(data):
         csv_file.close()
 
     last_date = total_per_day['data'][-1]['date']
+    path = '../data/metadata/'
+    os.makedirs(path, exist_ok=True)
     with open('../data/metadata/last_date.txt', 'w') as f:
         f.write(last_date)
 
