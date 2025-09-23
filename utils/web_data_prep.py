@@ -9,7 +9,7 @@ from utils.name_conversion import get_name, get_position, get_aa_name
 
 @st.cache_resource
 def load_data():
-    path='../YoyoMut_data/'
+    path='dynamic_data/'
     files = os.listdir(f'{path}data/smoothed_protein_data')
     smoothed_by_days = {}
     smoothed_by_seq = {}
