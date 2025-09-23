@@ -9,18 +9,19 @@ from utils.name_conversion import get_name, get_position, get_aa_name
 
 @st.cache_resource
 def load_data():
-    files = os.listdir('data/smoothed_protein_data')
+    path='../YoyoMut_data/'
+    files = os.listdir(f'{path}data/smoothed_protein_data')
     smoothed_by_days = {}
     smoothed_by_seq = {}
     for file in files:
         protein = file.split('_')[0]
-        df = pd.read_csv('data/smoothed_protein_data/' + file)
+        df = pd.read_csv(f'{path}data/smoothed_protein_data/' + file)
         dict_of_dfs = {get_name(key): group for key, group in df.groupby('name')}
         if 'days' in file:
             smoothed_by_days[protein] = dict_of_dfs
         elif 'seq' in file:
             smoothed_by_seq[protein] = dict_of_dfs
-    with open("data/metadata/last_date.txt", 'r') as f:
+    with open(f"{path}data/metadata/last_date.txt", 'r') as f:
         last_date = f.read()
         st.session_state.last_date = last_date
     return smoothed_by_days, smoothed_by_seq
