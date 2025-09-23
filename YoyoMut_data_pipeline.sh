@@ -8,4 +8,4 @@ docker-compose down
 echo "Moving data..."
 cp data/ ../YoyoMut_data/
 echo "Finished moving data."
-docker-compose up
+docker-compose up -d

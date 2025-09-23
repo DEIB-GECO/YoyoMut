@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-from data_collection_all_protein import collect_data
+from data_collection.data_collection_all_protein import collect_data
 from utils.smoothing_data import smooth_data_per_days, smooth_data_per_num_of_sequences
 
 
@@ -38,6 +38,7 @@ def data_preparation():
             df['name'] = file
             dfs_per_seq.append(df)
         df_days = pd.concat(dfs_per_days)
+        os.makedirs('../data/smoothed_protein_data/', exist_ok=True)
         df_days.to_csv('../data/smoothed_protein_data/' + folder + '_days.csv')
         df_seq = pd.concat(dfs_per_seq)
         df_seq.to_csv('../data/smoothed_protein_data/' + folder + '_seq.csv')
