@@ -86,7 +86,7 @@ with threshold_alg:
         st.selectbox("Choose the protein:",
                      options=st.session_state.smoothed_data_files_days.keys(),
                      key="protein_threshold")
-        st.number_input('Global relative frequency threshold (0-1):', value=0.3, placeholder='0.3',
+        st.number_input('Global relative prevalence threshold (0-1):', value=0.3, placeholder='0.3',
                         min_value=0.0,
                         max_value=1.0,
                         help="The threshold defines the minimal proportion of sequences "
@@ -94,7 +94,7 @@ with threshold_alg:
                         key="threshold")
 
         st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
-                        help="Minimal number of days above the selected relative frequency threshold "
+                        help="Minimal number of days above the selected relative prevalence threshold "
                              "to be considered significant.",
                         key='min_days')
 
@@ -141,7 +141,7 @@ if st.session_state.get("form_3d_submitted"):
             filter_mutations(st.session_state.classified_mutations_slope)
         st.session_state.protein = st.session_state.protein_slope
     if st.session_state.get("last_submitted") == "threshold_alg":
-        st.subheader("Classification of residues by relative frequency threshold", anchor=False)
+        st.subheader("Classification of residues by relative prevalence threshold", anchor=False)
     if st.session_state.get("last_submitted") == "slope_alg":
         st.subheader("Classification of residues by prevalence slope analysis", anchor=False)
 

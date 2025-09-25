@@ -59,7 +59,7 @@ with reports_threshold:
         st.selectbox("Choose the protein:",
                      options=st.session_state.smoothed_data_files_days.keys(),
                      key="protein_threshold")
-        threshold = st.number_input('Global relative frequency threshold (0-1):', value=0.3, placeholder='0.3',
+        threshold = st.number_input('Global relative prevalence threshold (0-1):', value=0.3, placeholder='0.3',
                                     help="The threshold defines the minimal proportion of sequences "
                                          "that must contain the mutation for it to be relevant.",
                                     min_value=0.0,
@@ -67,7 +67,7 @@ with reports_threshold:
                                     )
 
         min_days = st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
-                                   help="Minimal number of days above the selected relative frequency threshold "
+                                   help="Minimal number of days above the selected relative prevalence threshold "
                                         "to be considered significant."
                                    )
 
@@ -110,7 +110,7 @@ with reports_threshold:
                 st.session_state.yo_yo_threshold_report_path = \
                     results_to_PDF(report_path='./reports/',
                                    report_title=f'Yo-yo mutations - {st.session_state.protein}',
-                                   additional_info='Classification of residues by relative frequency threshold',
+                                   additional_info='Classification of residues by relative prevalence threshold',
                                    report_name='yo_yo_mutations_threshold_analysis',
                                    data_dict=st.session_state.yo_yo_mutations_threshold,
                                    parameters={'Threshold': st.session_state.threshold,
@@ -122,7 +122,7 @@ with reports_threshold:
                 st.session_state.fixated_threshold_report_path = \
                     results_to_PDF(report_path='./reports/',
                                    report_title=f'Fixated mutations - {st.session_state.protein}',
-                                   additional_info='Classification of residues by relative frequency threshold',
+                                   additional_info='Classification of residues by relative prevalence threshold',
                                    report_name='fixated_mutations_threshold_analysis',
                                    data_dict=st.session_state.fixated_mutations_threshold,
                                    parameters={'Threshold': st.session_state.threshold,

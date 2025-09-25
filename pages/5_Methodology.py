@@ -18,7 +18,7 @@ specific date. Information about the confidence interval is also available for e
 st.markdown("""
 ### Data preparation for the algorithms
 To have more consistent data for the classification algorithms input, the data is being smoothed. 
-For the classification by relative frequency threshold, the data is grouped until it reaches at least 5000 sequences
+For the classification by relative prevalence threshold, the data is grouped until it reaches at least 5000 sequences
 in one time frame and then averaged. Because of the difference in sequencing capacity over time, the time periods are 
 not uniform.
 For the classification by prevalence slope, the data is smoothed over a 7-day time period, as the slope computation
@@ -26,7 +26,7 @@ depends on consistent time frames.
 """)
 
 st.markdown("""
-### Classification of residues by relative frequency threshold
+### Classification of residues by relative prevalence threshold
 After smoothing the data and inputting the parameters, the algorithm classifies residues into yo-yo, fixated or 
 unmutated residues. Residues are classified as fixated if the mutation prevalence went over the threshold and remained 
 over the threshold. The residue is classified as yo-yo if the mutation prevalence went over the threshold, remained

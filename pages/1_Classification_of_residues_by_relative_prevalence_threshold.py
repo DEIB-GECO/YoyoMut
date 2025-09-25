@@ -9,7 +9,7 @@ from utils.yo_yo_check import filter_mutations
 
 st.set_page_config(page_title="Mutation classification", layout="wide")
 
-st.title("Classification of residues by relative frequency threshold", anchor=False)
+st.title("Classification of residues by relative prevalence threshold", anchor=False)
 
 st.write(
     """
@@ -52,7 +52,7 @@ with st.form("parameters", enter_to_submit=False):
                  options=st.session_state.smoothed_data_files_days.keys(),
                  key="protein_threshold")
     st.divider()
-    st.number_input('Global relative frequency threshold (0-1):', value=0.3, placeholder='0.3',
+    st.number_input('Global relative prevalence threshold (0-1):', value=0.3, placeholder='0.3',
                     min_value=0.0,
                     max_value=1.0,
                     help="The threshold defines the minimal proportion of sequences "
@@ -61,7 +61,7 @@ with st.form("parameters", enter_to_submit=False):
     st.divider()
 
     st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
-                    help="Minimal number of days above the selected relative frequency threshold "
+                    help="Minimal number of days above the selected relative prevalence threshold "
                          "to be considered significant.",
                     key="min_days")
 
