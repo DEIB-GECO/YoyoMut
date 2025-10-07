@@ -85,10 +85,10 @@ def count_hills_slope(df):
             started = True
             ended = False
             curr_start = df.iloc[i]['start-date']
-            while slopes[i] >= 0.01 and i < len(slopes) - 1:
+            while slopes[i] >= 0.001 and i < len(slopes) - 1:
                 i += 1
         elif started and not ended and slopes[i] < -0.001:
-            while slopes[i] <= -0.01 and i < len(slopes) - 1:
+            while slopes[i] <= -0.001 and i < len(slopes) - 1:
                 i += 1
             started = False
             ended = True
