@@ -11,7 +11,7 @@ if 'not_first_load' not in st.session_state:
     st.session_state.not_first_load = True
 
 if 'last_date' not in st.session_state:
-    with open("data/metadata/last_date.txt", 'r') as f:
+    with open("dynamic_data/data/metadata/last_date.txt", 'r') as f:
         last_date = f.read()
         st.session_state.last_date = last_date
 

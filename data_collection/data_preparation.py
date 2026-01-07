@@ -8,15 +8,15 @@ from utils.smoothing_data import smooth_data_per_days, smooth_data_per_num_of_se
 
 def data_preparation():
     print("Data preparation:")
-    data_path = 'data/all_protein_data/'
+    data_path = '../data/all_protein_data/'
     folders = os.listdir(data_path)
 
     print(folders)
     for folder in folders:
         print("Currently: ", folder)
-        data_path = f'data/all_protein_data/{folder}/'
-        destination_path_by_days = f'data/smooth_protein_data/{folder}/by_days/'
-        destination_path_by_sequences = f'data/smooth_protein_data/{folder}/by_seq/'
+        data_path = f'../data/all_protein_data/{folder}/'
+        destination_path_by_days = f'../data/smooth_protein_data/{folder}/by_days/'
+        destination_path_by_sequences = f'../data/smooth_protein_data/{folder}/by_seq/'
 
         os.makedirs(destination_path_by_days, exist_ok=True)
         os.makedirs(destination_path_by_sequences, exist_ok=True)
@@ -38,9 +38,9 @@ def data_preparation():
             df['name'] = file
             dfs_per_seq.append(df)
         df_days = pd.concat(dfs_per_days)
-        os.makedirs('data/smoothed_protein_data/', exist_ok=True)
-        df_days.to_csv('data/smoothed_protein_data/' + folder + '_days.csv')
+        os.makedirs('../data/smoothed_protein_data/', exist_ok=True)
+        df_days.to_csv('../data/smoothed_protein_data/' + folder + '_days.csv')
         df_seq = pd.concat(dfs_per_seq)
-        df_seq.to_csv('data/smoothed_protein_data/' + folder + '_seq.csv')
+        df_seq.to_csv('../data/smoothed_protein_data/' + folder + '_seq.csv')
 
 
