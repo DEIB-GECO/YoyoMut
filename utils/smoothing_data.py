@@ -88,7 +88,7 @@ def smooth_data_per_num_of_sequences(file_name, path):
                                   'ci-lower-avg': ci_lower_avg,
                                   'ci-upper-avg': ci_upper_avg
                                   })
-            if i < len(data['date']):
+            if i < len(data['date']) - 1:
                 start_date = data['date'][i + 1]
             curr_total = 0
             mutated = 0
