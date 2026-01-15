@@ -26,8 +26,7 @@ def is_data_up_to_date(latest_data_id):
 def get_all_mutations(min_sequences=1000):
     all_mutations_url = "https://lapis.cov-spectrum.org/open/v2/sample/aminoAcidMutations?minProportion=0&orderBy=mutation"
     data = requests.get(all_mutations_url).json()['data']
-    # proteins = ['E', 'M', 'N', 'ORF1a', 'ORF1b', 'ORF3a', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9b', 'S']
-    proteins = ['S']
+    proteins = ['E', 'M', 'N', 'ORF1a', 'ORF1b', 'ORF3a', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9b', 'S']
     filtered_mutations = {}
     for p in proteins:
         filtered_mutations[p] = []
@@ -47,7 +46,6 @@ def get_all_mutations(min_sequences=1000):
     for protein in proteins:
         i = 0
         for mutation in filtered_mutations[protein]:
-            start_time_mutation = time.time()
             if i % 10 == 0:
                 print(f"{i} out of {len(filtered_mutations[protein])}")
             i += 1
@@ -56,8 +54,6 @@ def get_all_mutations(min_sequences=1000):
             response = requests.get(url).json()
             mutations['dataVersion'] = response['info']['dataVersion']
             mutations[mutation] = response['data']
-            end_time_mutation = time.time()
-            # print('for mutation: ', end_time_mutation - start_time_mutation)
     end_time = time.time()
     print('total time: ', end_time - start_time)
     return mutations
@@ -66,7 +62,7 @@ def get_all_mutations(min_sequences=1000):
 def get_all_insertions(min_sequences=1000):
     all_insertions_url = "https://lapis.cov-spectrum.org/open/v2/sample/aminoAcidInsertions?minProportion=0"
     data = requests.get(all_insertions_url).json()['data']
-    proteins = ['S']
+    proteins = ['E', 'M', 'N', 'ORF1a', 'ORF1b', 'ORF3a', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9b', 'S']
 
     filtered_insertions = {}
     for p in proteins:

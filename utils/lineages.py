@@ -44,12 +44,9 @@ def get_top_lineages(mutation, start_date, end_date):
     url = base_url + "&fields=nextcladePangoLineage"
     response = requests.get(url).json()
     total_count_response = requests.get(base_url).json()
-    if 'data' not in total_count_response:
-        print(total_count_response)
     total_count = total_count_response['data'][0]['count']
     aggregated_lineages = defaultdict(float)
     if 'data' not in response:
-        print(response)
         return
 
     with open('./utils/alias_key.json') as aliases_file:

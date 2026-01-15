@@ -15,11 +15,6 @@ def data_preparation():
     for folder in folders:
         print("Currently: ", folder)
         data_path = f'../data/all_protein_data/{folder}/'
-        destination_path_by_days = f'../data/smooth_protein_data/{folder}/by_days/'
-        destination_path_by_sequences = f'../data/smooth_protein_data/{folder}/by_seq/'
-
-        os.makedirs(destination_path_by_days, exist_ok=True)
-        os.makedirs(destination_path_by_sequences, exist_ok=True)
         files = os.listdir(data_path)
         if len(files) == 0:
             collect_data()
