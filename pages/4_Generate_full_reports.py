@@ -57,7 +57,7 @@ with reports_threshold:
     with st.form("parameters-threshold", enter_to_submit=False):
         st.write("Please input parameters for amino acid residue classification")
         st.selectbox("Choose the protein:",
-                     options=st.session_state.smoothed_data_files_days.keys(),
+                     options=sorted(st.session_state.smoothed_data_files_days.keys()),
                      key="protein_threshold")
         threshold = st.number_input('Global relative prevalence threshold (0-1):', value=0.3, placeholder='0.3',
                                     help="The threshold defines the minimal proportion of sequences "
@@ -179,7 +179,7 @@ with reports_slope:
     with st.form("parameters-slope", enter_to_submit=False):
         st.write("Please input parameters for amino acid residue classification")
         st.selectbox("Choose the protein:",
-                     options=st.session_state.smoothed_data_files_days.keys(),
+                     options=sorted(st.session_state.smoothed_data_files_days.keys()),
                      key="protein_slope")
         slope_points = int(st.number_input('Number of points used to calculate the slopes: ', value=5, placeholder='5',
                                            help="The number of data points used to calculate one slope value."
