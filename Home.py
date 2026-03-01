@@ -11,7 +11,7 @@ if 'not_first_load' not in st.session_state:
     st.session_state.not_first_load = True
 
 if 'last_date' not in st.session_state:
-    with open("data/metadata/last_date.txt", 'r') as f:
+    with open("dynamic_data/data/metadata/last_date.txt", 'r') as f:
         last_date = f.read()
         st.session_state.last_date = last_date
 
@@ -28,8 +28,6 @@ st.write(f"**YoyoMut** is a tool that allows regular scanning of open SARS-CoV-2
          f"finally, a **3D-protein structure** allows us to identify **spatial clustering of adjacent mutated "
          f"positions**.")
 
-st.error(f"**Disclaimer:** Currently only the analysis of the Spike protein is available, others "
-         f"will be added in future updates.", icon="ℹ️")
 
 st.write(f"**Systematic monitoring** of these behaviors relieves a heavy burden on immunologists and structuralists; "
          f"our tool has **practical implications for vaccine and therapeutic anti-Spike monoclonal antibody (mAb) "

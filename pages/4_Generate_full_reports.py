@@ -1,7 +1,7 @@
 import streamlit as st
 from utils.hill_count import classify_mutations_threshold, classify_mutations_slope
 from utils.results_to_report import results_to_PDF
-from utils.web_data_prep import data_preparation
+from utils.web_data_prep import load_data
 from utils.yo_yo_check import filter_mutations
 
 st.title("Generate full reports", anchor=False)
@@ -12,12 +12,8 @@ st.markdown("Choose the algorithm you want to use, input the parameters and clic
 if 'smoothed_data_files_days' not in st.session_state \
         or 'smoothed_data_files_sequences' not in st.session_state:
     with st.status("Loading data...", expanded=False) as status:
-        if 'smoothed_data_files_days' not in st.session_state:
-            st.session_state.smoothed_data_files_days = data_preparation(by_days=True)
-        if 'smoothed_data_files_sequences' not in st.session_state:
-            st.session_state.smoothed_data_files_sequences = data_preparation(by_days=False)
+        st.session_state.smoothed_data_files_days, st.session_state.smoothed_data_files_sequences = load_data()
         status.update(label="Data loaded successfully!", state="complete", expanded=False)
-
 
 reset_button_container = st.container()
 reset_col1, reset_col2, reset_col3 = reset_button_container.columns([6, 5, 0.5], vertical_alignment='center')
@@ -60,7 +56,10 @@ with reports_threshold:
     # Input forms for the threshold algorithm
     with st.form("parameters-threshold", enter_to_submit=False):
         st.write("Please input parameters for amino acid residue classification")
-        threshold = st.number_input('Global relative frequency threshold (0-1):', value=0.3, placeholder='0.3',
+        st.selectbox("Choose the protein:",
+                     options=sorted(st.session_state.smoothed_data_files_days.keys()),
+                     key="protein_threshold")
+        threshold = st.number_input('Global relative prevalence threshold (0-1):', value=0.3, placeholder='0.3',
                                     help="The threshold defines the minimal proportion of sequences "
                                          "that must contain the mutation for it to be relevant.",
                                     min_value=0.0,
@@ -68,7 +67,7 @@ with reports_threshold:
                                     )
 
         min_days = st.number_input('Minimal duration (in days): ', value=30, placeholder='30',
-                                   help="Minimal number of days above the selected relative frequency threshold "
+                                   help="Minimal number of days above the selected relative prevalence threshold "
                                         "to be considered significant."
                                    )
 
@@ -93,10 +92,11 @@ with reports_threshold:
     # Running the algorithm
     if st.session_state.get("submitted_threshold"):
         st.session_state.classified_mutations_threshold = \
-            classify_mutations_threshold("smoothed_data_files_sequences",
+            classify_mutations_threshold("smoothed_data_files_days",
+                                         st.session_state.protein_threshold,
                                          st.session_state.threshold,
                                          st.session_state.min_days)
-
+        st.session_state.protein = st.session_state.protein_threshold
         st.session_state.yo_yo_mutations_threshold, st.session_state.fixated_mutations_threshold = \
             filter_mutations(st.session_state.classified_mutations_threshold)
 
@@ -109,8 +109,8 @@ with reports_threshold:
             with st.spinner("Generating yo-yo mutations report..."):
                 st.session_state.yo_yo_threshold_report_path = \
                     results_to_PDF(report_path='./reports/',
-                                   report_title='Yo-yo mutations',
-                                   additional_info='Classification of residues by relative frequency threshold',
+                                   report_title=f'Yo-yo mutations - {st.session_state.protein}',
+                                   additional_info='Classification of residues by relative prevalence threshold',
                                    report_name='yo_yo_mutations_threshold_analysis',
                                    data_dict=st.session_state.yo_yo_mutations_threshold,
                                    parameters={'Threshold': st.session_state.threshold,
@@ -121,8 +121,8 @@ with reports_threshold:
             with st.spinner("Generating fixated mutations report..."):
                 st.session_state.fixated_threshold_report_path = \
                     results_to_PDF(report_path='./reports/',
-                                   report_title='Fixated mutations',
-                                   additional_info='Classification of residues by relative frequency threshold',
+                                   report_title=f'Fixated mutations - {st.session_state.protein}',
+                                   additional_info='Classification of residues by relative prevalence threshold',
                                    report_name='fixated_mutations_threshold_analysis',
                                    data_dict=st.session_state.fixated_mutations_threshold,
                                    parameters={'Threshold': st.session_state.threshold,
@@ -178,6 +178,9 @@ with reports_slope:
     # Input forms for the slope algorithm
     with st.form("parameters-slope", enter_to_submit=False):
         st.write("Please input parameters for amino acid residue classification")
+        st.selectbox("Choose the protein:",
+                     options=sorted(st.session_state.smoothed_data_files_days.keys()),
+                     key="protein_slope")
         slope_points = int(st.number_input('Number of points used to calculate the slopes: ', value=5, placeholder='5',
                                            help="The number of data points used to calculate one slope value."
                                                 " The parameter can increase or decrease sensitivity of the algorithm."))
@@ -201,8 +204,10 @@ with reports_slope:
     # Running the algorithm
     if st.session_state.get("submitted_slope"):
         st.session_state.classified_mutations_slope = \
-            classify_mutations_slope("smoothed_data_files_days", slope_points)
-
+            classify_mutations_slope("smoothed_data_files_sequences",
+                                     st.session_state.protein_slope,
+                                     slope_points)
+        st.session_state.protein = st.session_state.protein_slope
         st.session_state.yo_yo_mutations_slope, st.session_state.fixated_mutations_slope = \
             filter_mutations(st.session_state.classified_mutations_slope)
 
@@ -215,7 +220,7 @@ with reports_slope:
             with st.spinner("Generating yo-yo mutations report..."):
                 st.session_state.yo_yo_slope_report_path = \
                     results_to_PDF(report_path='./reports/',
-                                   report_title='Yo-yo mutations',
+                                   report_title=f'Yo-yo mutations - {st.session_state.protein}',
                                    additional_info='Classification of residues by prevalence slope analysis',
                                    report_name='yo_yo_mutations_slope_analysis',
                                    data_dict=st.session_state.yo_yo_mutations_slope,
@@ -225,7 +230,7 @@ with reports_slope:
             with st.spinner("Generating fixated mutations report..."):
                 st.session_state.fixated_slope_report_path = \
                     results_to_PDF(report_path='./reports/',
-                                   report_title='Fixated mutations',
+                                   report_title=f'Fixated mutations - {st.session_state.protein}',
                                    additional_info='Classification of residues by prevalence slope analysis',
                                    report_name='fixated_mutations_slope_analysis',
                                    data_dict=st.session_state.fixated_mutations_slope,

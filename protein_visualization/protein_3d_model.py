@@ -3,6 +3,8 @@ import json
 
 import streamlit as st
 
+from protein_visualization.protein_structure_residues import adjust_potential_residues
+
 names_dict = {
     "base": "Base",
     "yo_yo": "Yo-yo residues",
@@ -43,6 +45,8 @@ def get_colors_for_legend():
 
 
 def get_domain_html(data):
+    if st.session_state.protein != 'S':
+        return ""
     html_string = f""
     for k in data:
         if k in ["base", "yo_yo", "fixated"]:
@@ -57,11 +61,37 @@ def get_domain_html(data):
         """
     return html_string
 
+
 def collapse_form():
     st.session_state.visualization_form_expanded = False
 
+
 def show_3d_protein(yo_yo_residues, fixated_residues):
-    pdb_file_path = "./protein_visualization/SPIKE_WT_NoGLYC_NoH.pdb"
+    pdb_file_paths = {
+        'S': "./protein_visualization/SARS-CoV-2_prot/SPIKE_WT_NoGLYC_NoH.pdb",
+        'E': "./protein_visualization/SARS-CoV-2_prot/E_7k3g.pdb",
+        'M': "./protein_visualization/SARS-CoV-2_prot/M_8ctk.pdb",
+        'ORF3a': "./protein_visualization/SARS-CoV-2_prot/ORF3a_6xdc.pdb",
+        'ORF7a': "./protein_visualization/SARS-CoV-2_prot/ORF7a_6w37.pdb",
+        'ORF8': "./protein_visualization/SARS-CoV-2_prot/ORF8_7jtl.pdb",
+        'ORF9b': "./protein_visualization/SARS-CoV-2_prot/ORF9b_6z4u.pdb",
+        'N - N ter': './protein_visualization/SARS-CoV-2_prot/N_NTER_6m3m.pdb',
+        'N - C ter': './protein_visualization/SARS-CoV-2_prot/N_CTER_7c22.pdb',
+        'NSP2': './protein_visualization/SARS-CoV-2_prot/NSP2_7msx.pdb',
+        'NSP3': './protein_visualization/SARS-CoV-2_prot/NSP3_6w9c.pdb',
+        'NSP5': './protein_visualization/SARS-CoV-2_prot/NSP5_inhibitor_7rn1.pdb',
+        'NSP7_NSP8_NSP12': './protein_visualization/SARS-CoV-2_prot/NSP7_NSP8_NSP12_7bv2.pdb',
+        'NSP9': './protein_visualization/SARS-CoV-2_prot/NSP9_6w4b.pdb',
+        'NSP10': './protein_visualization/SARS-CoV-2_prot/NSP10_6zct.pdb',
+        'NSP10_NSP14': './protein_visualization/SARS-CoV-2_prot/NSP10_NSP14_RNA_7n0b.pdb',
+        'NSP10_NSP16': './protein_visualization/SARS-CoV-2_prot/NSP10_NSP16_6w4h.pdb',
+        'NSP13': './protein_visualization/SARS-CoV-2_prot/NSP13_7nio.pdb',
+        'NSP15': './protein_visualization/SARS-CoV-2_prot/NSP15_6vww.pdb',
+    }
+    if st.session_state.protein_structure not in pdb_file_paths:
+        st.info(f"The visualization for {st.session_state.protein_structure} is not available.")
+        return
+    pdb_file_path = pdb_file_paths[st.session_state.protein_structure]
     with open(pdb_file_path, "r") as file:
         pdb_data = file.read()
 
@@ -74,7 +104,6 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
 
             model_col1, model_col2 = st.columns(2)
             with model_col1:
-                # style = st.radio("Choose the style of the protein model:", style_choices)
                 style = st.segmented_control("Choose the style of the protein model:", style_choices,
                                              selection_mode="single",
                                              default="sphere",
@@ -112,86 +141,88 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
             st.session_state.show_fixated = "Yes"
             st.divider()
 
-            # domains: SS (1-26), NTD (residues 27-292), N2R (293-330), and RBD (331-541)
-            # ss_col1, ss_col2, ss_col3 = st.columns([1, 1.5, 2])
-            # with ss_col1:
-            #     st.radio("Highlight SS domain (1-26):", ['Yes', 'No'], horizontal=True, index=1,
-            #              key="show_ss")
-            #     # show_ss = st.toggle("Highlight SS domain (1-26):", key="show_ss")
-            # with ss_col2:
-            #     st.segmented_control("Choose the style of the SS domain:", style_choices,
-            #                          selection_mode="single",
-            #                          default="sphere",
-            #                          key="ss_style")
 
-            # with ss_col3:
-            #     st.color_picker("Select the color for the SS domain", "#808080",
-            #                     key="ss_color")
-            # st.divider()
 
-            ntd_col1, ntd_col2, ntd_col3 = st.columns([1, 1.5, 2])
-            with ntd_col1:
-                st.radio("Highlight NTD domain (27-292):", ['Yes', 'No'], horizontal=True, index=1,
-                         key="show_ntd")
+            if st.session_state.protein_structure == 'S':
+                # domains: SS (1-26), NTD (residues 27-292), N2R (293-330), and RBD (331-541)
+                # ss_col1, ss_col2, ss_col3 = st.columns([1, 1.5, 2])
+                # with ss_col1:
+                #     st.radio("Highlight SS domain (1-26):", ['Yes', 'No'], horizontal=True, index=1,
+                #              key="show_ss")
+                #     # show_ss = st.toggle("Highlight SS domain (1-26):", key="show_ss")
+                # with ss_col2:
+                #     st.segmented_control("Choose the style of the SS domain:", style_choices,
+                #                          selection_mode="single",
+                #                          default="sphere",
+                #                          key="ss_style")
 
-            with ntd_col2:
-                st.segmented_control("Choose the style of the NTD domain:", style_choices,
-                                     selection_mode="single",
-                                     default="sphere",
-                                     key="ntd_style")
-            with ntd_col3:
-                st.color_picker("Select the color for the NTD domain", "#808080",
-                                key="ntd_color")
+                # with ss_col3:
+                #     st.color_picker("Select the color for the SS domain", "#808080",
+                #                     key="ss_color")
+                # st.divider()
+                ntd_col1, ntd_col2, ntd_col3 = st.columns([1, 1.5, 2])
+                with ntd_col1:
+                    st.radio("Highlight NTD domain (27-292):", ['Yes', 'No'], horizontal=True, index=1,
+                             key="show_ntd")
 
-            st.divider()
+                with ntd_col2:
+                    st.segmented_control("Choose the style of the NTD domain:", style_choices,
+                                         selection_mode="single",
+                                         default="sphere",
+                                         key="ntd_style")
+                with ntd_col3:
+                    st.color_picker("Select the color for the NTD domain", "#808080",
+                                    key="ntd_color")
 
-            n2r_col1, n2r_col2, n2r_col3 = st.columns([1, 1.5, 2])
-            with n2r_col1:
-                st.radio("Highlight N2R domain (293-330):", ['Yes', 'No'], horizontal=True, index=1,
-                         key="show_n2r")
-            with n2r_col2:
-                st.segmented_control("Choose the style of the N2R domain:", style_choices,
-                                     selection_mode="single",
-                                     default="sphere",
-                                     key="n2r_style")
-            with n2r_col3:
-                st.color_picker("Select the color for the N2R domain", "#808080",
-                                key="n2r_color")
+                st.divider()
 
-            st.divider()
+                n2r_col1, n2r_col2, n2r_col3 = st.columns([1, 1.5, 2])
+                with n2r_col1:
+                    st.radio("Highlight N2R domain (293-330):", ['Yes', 'No'], horizontal=True, index=1,
+                             key="show_n2r")
+                with n2r_col2:
+                    st.segmented_control("Choose the style of the N2R domain:", style_choices,
+                                         selection_mode="single",
+                                         default="sphere",
+                                         key="n2r_style")
+                with n2r_col3:
+                    st.color_picker("Select the color for the N2R domain", "#808080",
+                                    key="n2r_color")
 
-            rbd_col1, rbd_col2, rbd_col3 = st.columns([1, 1.5, 2])
-            with rbd_col1:
-                st.radio("Highlight RBD domain (331-541):", ['Yes', 'No'], horizontal=True, index=1,
-                         key="show_rbd")
-            with rbd_col2:
-                st.segmented_control("Choose the style of the RBD domain:", style_choices,
-                                     selection_mode="single",
-                                     default="sphere",
-                                     key="rbd_style")
-            with rbd_col3:
-                st.color_picker("Select the color for the RBD domain", "#808080",
-                                key="rbd_color")
+                st.divider()
 
-            st.divider()
+                rbd_col1, rbd_col2, rbd_col3 = st.columns([1, 1.5, 2])
+                with rbd_col1:
+                    st.radio("Highlight RBD domain (331-541):", ['Yes', 'No'], horizontal=True, index=1,
+                             key="show_rbd")
+                with rbd_col2:
+                    st.segmented_control("Choose the style of the RBD domain:", style_choices,
+                                         selection_mode="single",
+                                         default="sphere",
+                                         key="rbd_style")
+                with rbd_col3:
+                    st.color_picker("Select the color for the RBD domain", "#808080",
+                                    key="rbd_color")
 
-            antigenic_supersite_col1, antigenic_supersite_col2, antigenic_supersite_col3 = st.columns([1, 1.5, 2])
-            with antigenic_supersite_col1:
-                st.radio("Highlight antigenic supersite (14-20 + 140-158 + 245-264):",
-                         ['Yes', 'No'], horizontal=True, index=1,
-                         key="show_agss")
-            with antigenic_supersite_col2:
-                st.segmented_control("Choose the style of the antigenic supersite:",
-                                     style_choices,
-                                     selection_mode="single",
-                                     default="sphere",
-                                     key="agss_style")
-            with antigenic_supersite_col3:
-                st.color_picker("Select the color for antigenic supersite",
-                                "#808080",
-                                key="agss_color")
+                st.divider()
 
-            st.divider()
+                antigenic_supersite_col1, antigenic_supersite_col2, antigenic_supersite_col3 = st.columns([1, 1.5, 2])
+                with antigenic_supersite_col1:
+                    st.radio("Highlight antigenic supersite (14-20 + 140-158 + 245-264):",
+                             ['Yes', 'No'], horizontal=True, index=1,
+                             key="show_agss")
+                with antigenic_supersite_col2:
+                    st.segmented_control("Choose the style of the antigenic supersite:",
+                                         style_choices,
+                                         selection_mode="single",
+                                         default="sphere",
+                                         key="agss_style")
+                with antigenic_supersite_col3:
+                    st.color_picker("Select the color for antigenic supersite",
+                                    "#808080",
+                                    key="agss_color")
+
+                st.divider()
 
             submitted = st.form_submit_button("Submit", on_click=collapse_form)
 
@@ -215,7 +246,10 @@ def show_3d_protein(yo_yo_residues, fixated_residues):
 
         domain_coloring_html = get_domain_html(visualization_data)
 
-        potentialResi = json.dumps(st.session_state.potential_residues)
+        potentialResi = adjust_potential_residues(
+            st.session_state.potential_residues[st.session_state.protein],
+            st.session_state.protein_structure)
+        potentialResi = json.dumps(potentialResi)
 
         html_code = f"""
             <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
