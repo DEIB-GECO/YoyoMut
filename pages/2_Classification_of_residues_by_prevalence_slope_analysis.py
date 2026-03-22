@@ -47,10 +47,12 @@ def reset_form():
     st.session_state.slope_class_submit_btn_disabled = False
 
 
+PROTEIN_OPTIONS = sorted(st.session_state.smoothed_data_files_sequences.keys())
 with st.form("parameters", enter_to_submit=False):
     st.write("Please input parameters for amino acid residue classification")
     st.selectbox("Choose the protein:",
-                 options=sorted(st.session_state.smoothed_data_files_days.keys()),
+                 options=PROTEIN_OPTIONS,
+                 index=PROTEIN_OPTIONS.index('S'),
                  key="protein_slope")
     st.divider()
     st.number_input('Number of timepoints to calculate the slope: ', value=5, placeholder='5',

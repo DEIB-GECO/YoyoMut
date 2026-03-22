@@ -44,12 +44,13 @@ def reset_form():
     st.session_state.form_submitted = False
     st.session_state.threshold_class_submit_btn_disabled = False
 
-
+PROTEIN_OPTIONS = sorted(st.session_state.smoothed_data_files_days.keys())
 submitted = False
 with st.form("parameters", enter_to_submit=False):
     st.write("Please input parameters for amino acid residue classification")
     st.selectbox("Choose the protein:",
-                 options=sorted(st.session_state.smoothed_data_files_days.keys()),
+                 options=PROTEIN_OPTIONS,
+                 index=PROTEIN_OPTIONS.index('S'),
                  key="protein_threshold")
     st.divider()
     st.number_input('Global relative prevalence threshold (0-1):', value=0.3, placeholder='0.3',
