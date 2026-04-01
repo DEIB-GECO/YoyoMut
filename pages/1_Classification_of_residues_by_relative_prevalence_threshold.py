@@ -48,7 +48,7 @@ PROTEIN_OPTIONS = sorted(st.session_state.smoothed_data_files_days.keys())
 submitted = False
 with st.form("parameters", enter_to_submit=False):
     st.write("Please input parameters for amino acid residue classification")
-    st.selectbox("Choose the protein:",
+    st.selectbox("Choose the protein (according to CoVSpectrum classification):",
                  options=PROTEIN_OPTIONS,
                  index=PROTEIN_OPTIONS.index('S'),
                  key="protein_threshold")

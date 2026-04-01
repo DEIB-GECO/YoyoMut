@@ -102,7 +102,7 @@ AVAILABLE_STRUCTURES = sorted(st.session_state.available_structures.keys())
 with threshold_alg:
     with st.form("parameters-threshold", enter_to_submit=False):
         st.write("Please input parameters for amino acid residue classification")
-        st.selectbox("Choose the protein:",
+        st.selectbox("Choose the protein/domain to be visualized on 3D structure:",
                      options=AVAILABLE_STRUCTURES,
                      index=AVAILABLE_STRUCTURES.index('S'),
                      key="protein_structure_threshold")
@@ -128,7 +128,7 @@ reset_col11.button("Reset threshold algorithm parameters", on_click=reset_thresh
 with slope_alg:
     with st.form("parameters-slope", enter_to_submit=False):
         st.write("Please input parameters for amino acid residue classification")
-        st.selectbox("Choose the protein:",
+        st.selectbox("Choose the protein/domain to be visualized on 3D structure:",
                      options=AVAILABLE_STRUCTURES,
                      index=AVAILABLE_STRUCTURES.index('S'),
                      key="protein_structure_slope")
